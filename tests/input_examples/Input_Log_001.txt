@@ -1,0 +1,59 @@
+entry,at,order
+"-- ending hand #4 --",2022-01-13T19:53:17.974Z,164210359797402
+"""Opponent2 @ om8gM5uHmH"" collected 2 from pot",2022-01-13T19:53:17.974Z,164210359797401
+"Uncalled bet of 1 returned to ""Opponent2 @ om8gM5uHmH""",2022-01-13T19:53:17.974Z,164210359797400
+"""CT @ eNVKMq2Tcb"" folds",2022-01-13T19:53:17.160Z,164210359716000
+"""Opponent1 @ kGN22yoaDO"" folds",2022-01-13T19:53:15.410Z,164210359541000
+"""Opponent2 @ om8gM5uHmH"" posts a big blind of 2",2022-01-13T19:53:12.694Z,164210359269406
+"""CT @ eNVKMq2Tcb"" posts a small blind of 1",2022-01-13T19:53:12.694Z,164210359269405
+"Your hand is 4♣, 9♦",2022-01-13T19:53:12.694Z,164210359269402
+"Player stacks: #1 ""CT @ eNVKMq2Tcb"" (104) | #2 ""Opponent2 @ om8gM5uHmH"" (100) | #6 ""Opponent1 @ kGN22yoaDO"" (96)",2022-01-13T19:53:12.694Z,164210359269401
+"-- starting hand #4  (No Limit Texas Hold'em) (dealer: ""Opponent1 @ kGN22yoaDO"") --",2022-01-13T19:53:12.694Z,164210359269400
+"-- ending hand #3 --",2022-01-13T19:53:09.694Z,164210358969402
+"""CT @ eNVKMq2Tcb"" collected 4 from pot",2022-01-13T19:53:09.694Z,164210358969401
+"Uncalled bet of 10 returned to ""CT @ eNVKMq2Tcb""",2022-01-13T19:53:09.694Z,164210358969400
+"""Opponent1 @ kGN22yoaDO"" folds",2022-01-13T19:53:08.839Z,164210358883900
+"""CT @ eNVKMq2Tcb"" bets 10",2022-01-13T19:53:05.838Z,164210358583800
+"""Opponent1 @ kGN22yoaDO"" checks",2022-01-13T19:53:01.276Z,164210358127600
+"Flop:  [3♠, A♣, K♦]",2022-01-13T19:52:57.486Z,164210357748600
+"""CT @ eNVKMq2Tcb"" checks",2022-01-13T19:52:56.583Z,164210357658300
+"""Opponent1 @ kGN22yoaDO"" calls 2",2022-01-13T19:52:55.024Z,164210357502400
+"""Opponent2 @ om8gM5uHmH"" folds",2022-01-13T19:52:52.983Z,164210357298300
+"""CT @ eNVKMq2Tcb"" posts a big blind of 2",2022-01-13T19:52:45.875Z,164210356587506
+"""Opponent1 @ kGN22yoaDO"" posts a small blind of 1",2022-01-13T19:52:45.875Z,164210356587505
+"Your hand is 5♥, 2♦",2022-01-13T19:52:45.875Z,164210356587502
+"Player stacks: #1 ""CT @ eNVKMq2Tcb"" (102) | #2 ""Opponent2 @ om8gM5uHmH"" (100) | #6 ""Opponent1 @ kGN22yoaDO"" (98)",2022-01-13T19:52:45.875Z,164210356587501
+"-- starting hand #3  (No Limit Texas Hold'em) (dealer: ""Opponent2 @ om8gM5uHmH"") --",2022-01-13T19:52:45.875Z,164210356587500
+"-- ending hand #2 --",2022-01-13T19:52:42.872Z,164210356287202
+"""CT @ eNVKMq2Tcb"" collected 5 from pot",2022-01-13T19:52:42.872Z,164210356287201
+"Uncalled bet of 8 returned to ""CT @ eNVKMq2Tcb""",2022-01-13T19:52:42.872Z,164210356287200
+"""Opponent1 @ kGN22yoaDO"" folds",2022-01-13T19:52:42.013Z,164210356201300
+"""Opponent2 @ om8gM5uHmH"" folds",2022-01-13T19:52:41.056Z,164210356105600
+"""CT @ eNVKMq2Tcb"" raises to 10",2022-01-13T19:52:30.813Z,164210355081300
+"""Opponent1 @ kGN22yoaDO"" posts a big blind of 2",2022-01-13T19:52:26.219Z,164210354621906
+"""Opponent2 @ om8gM5uHmH"" posts a small blind of 1",2022-01-13T19:52:26.219Z,164210354621905
+"Your hand is 2♦, 2♣",2022-01-13T19:52:26.219Z,164210354621902
+"Player stacks: #1 ""CT @ eNVKMq2Tcb"" (99) | #2 ""Opponent2 @ om8gM5uHmH"" (101) | #6 ""Opponent1 @ kGN22yoaDO"" (100)",2022-01-13T19:52:26.219Z,164210354621901
+"-- starting hand #2  (No Limit Texas Hold'em) (dealer: ""CT @ eNVKMq2Tcb"") --",2022-01-13T19:52:26.219Z,164210354621900
+"-- ending hand #1 --",2022-01-13T19:52:23.304Z,164210354330402
+"""Opponent2 @ om8gM5uHmH"" collected 2 from pot",2022-01-13T19:52:23.304Z,164210354330401
+"Uncalled bet of 1 returned to ""Opponent2 @ om8gM5uHmH""",2022-01-13T19:52:23.304Z,164210354330400
+"""CT @ eNVKMq2Tcb"" folds",2022-01-13T19:52:22.464Z,164210354246400
+"""Opponent1 @ kGN22yoaDO"" folds",2022-01-13T19:52:15.570Z,164210353557000
+"""Opponent2 @ om8gM5uHmH"" posts a big blind of 2",2022-01-13T19:52:11.993Z,164210353199309
+"""CT @ eNVKMq2Tcb"" posts a small blind of 1",2022-01-13T19:52:11.993Z,164210353199308
+"Your hand is 7♠, 9♣",2022-01-13T19:52:11.993Z,164210353199305
+"Player stacks: #1 ""CT @ eNVKMq2Tcb"" (100) | #2 ""Opponent2 @ om8gM5uHmH"" (100) | #6 ""Opponent1 @ kGN22yoaDO"" (100)",2022-01-13T19:52:11.993Z,164210353199304
+"The player ""Opponent1 @ kGN22yoaDO"" joined the game with a stack of 100.",2022-01-13T19:52:11.993Z,164210353199303
+"The player ""Opponent2 @ om8gM5uHmH"" joined the game with a stack of 100.",2022-01-13T19:52:11.993Z,164210353199302
+"The player ""CT @ eNVKMq2Tcb"" joined the game with a stack of 100.",2022-01-13T19:52:11.993Z,164210353199301
+"-- starting hand #1  (No Limit Texas Hold'em) (dealer: ""Opponent1 @ kGN22yoaDO"") --",2022-01-13T19:52:11.993Z,164210353199300
+"The game's ante was changed from 0 to 0.",2022-01-13T19:49:33.009Z,164210337300902
+"The game's big blind was changed from 20 to 2.",2022-01-13T19:49:33.009Z,164210337300901
+"The game's small blind was changed from 10 to 1.",2022-01-13T19:49:33.009Z,164210337300900
+"The admin approved the player ""Opponent1 @ kGN22yoaDO"" participation with a stack of 100.",2022-01-13T19:49:20.549Z,164210336054900
+"The player ""Opponent1 @ kGN22yoaDO"" requested a seat.",2022-01-13T19:48:54.754Z,164210333475400
+"The admin approved the player ""Opponent2 @ om8gM5uHmH"" participation with a stack of 100.",2022-01-13T19:48:54.055Z,164210333405500
+"The player ""Opponent2 @ om8gM5uHmH"" requested a seat.",2022-01-13T19:48:40.906Z,164210332090600
+"The admin approved the player ""CT @ eNVKMq2Tcb"" participation with a stack of 100.",2022-01-13T19:47:57.511Z,164210327751101
+"The player ""CT @ eNVKMq2Tcb"" requested a seat.",2022-01-13T19:47:57.511Z,164210327751100

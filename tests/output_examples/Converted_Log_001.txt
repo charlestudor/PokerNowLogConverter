@@ -1,0 +1,95 @@
+PokerStars Hand #16294534973497852480: Hold'em No Limit ($1.00/$2.00 USD) - 2022/01/13 19:52:11 ET
+Table 'PNLogConverter' 10-max Seat #6 is the button
+Seat 1: CT ($100.00 in chips)
+Seat 2: Opponent2 ($100.00 in chips)
+Seat 6: Opponent1 ($100.00 in chips)
+CT: posts small blind $1.00
+Opponent2: posts big blind $2.00
+*** HOLE CARDS ***
+Dealt to CT [7s 9c]
+Opponent1: folds
+CT: folds
+Uncalled bet ($1.00) returned to Opponent2
+*** SHOW DOWN ***
+Opponent2 collected $2.00 from pot
+*** SUMMARY ***
+Total pot: $2.00 | Rake 0
+Seat 1: CT (small blind) folded before Flop
+Seat 2: Opponent2 (big blind) collected ($2.00)
+Seat 6: Opponent1 (button) folded before Flop (didn't bet)
+
+
+
+PokerStars Hand #5165813033032488010: Hold'em No Limit ($1.00/$2.00 USD) - 2022/01/13 19:52:26 ET
+Table 'PNLogConverter' 10-max Seat #1 is the button
+Seat 1: CT ($99.00 in chips)
+Seat 2: Opponent2 ($101.00 in chips)
+Seat 6: Opponent1 ($100.00 in chips)
+Opponent2: posts small blind $1.00
+Opponent1: posts big blind $2.00
+*** HOLE CARDS ***
+Dealt to CT [2d 2c]
+CT: raises $8.00 to $10.00
+Opponent2: folds
+Opponent1: folds
+Uncalled bet ($8.00) returned to CT
+*** SHOW DOWN ***
+CT collected $5.00 from pot
+*** SUMMARY ***
+Total pot: $5.00 | Rake 0
+Seat 1: CT (button) collected ($5.00)
+Seat 2: Opponent2 (small blind) folded before Flop
+Seat 6: Opponent1 (big blind) folded before Flop
+
+
+
+PokerStars Hand #1489639891971709125: Hold'em No Limit ($1.00/$2.00 USD) - 2022/01/13 19:52:45 ET
+Table 'PNLogConverter' 10-max Seat #2 is the button
+Seat 1: CT ($102.00 in chips)
+Seat 2: Opponent2 ($100.00 in chips)
+Seat 6: Opponent1 ($98.00 in chips)
+Opponent1: posts small blind $1.00
+CT: posts big blind $2.00
+*** HOLE CARDS ***
+Dealt to CT [5h 2d]
+Opponent2: folds
+Opponent1: calls $1.00
+CT: checks
+*** FLOP *** [3s Ac Kd]
+Opponent1: checks
+CT: bets $10.00
+Opponent1: folds
+Uncalled bet ($10.00) returned to CT
+*** SHOW DOWN ***
+CT collected $4.00 from pot
+*** SUMMARY ***
+Total pot: $4.00 | Rake 0
+Board: [3s Ac Kd]
+Seat 1: CT (big blind) collected ($4.00)
+Seat 2: Opponent2 (button) folded before Flop (didn't bet)
+Seat 6: Opponent1 (small blind) folded on the Flop
+
+
+
+PokerStars Hand #8893593178579480984: Hold'em No Limit ($1.00/$2.00 USD) - 2022/01/13 19:53:12 ET
+Table 'PNLogConverter' 10-max Seat #6 is the button
+Seat 1: CT ($104.00 in chips)
+Seat 2: Opponent2 ($100.00 in chips)
+Seat 6: Opponent1 ($96.00 in chips)
+CT: posts small blind $1.00
+Opponent2: posts big blind $2.00
+*** HOLE CARDS ***
+Dealt to CT [4c 9d]
+Opponent1: folds
+CT: folds
+Uncalled bet ($1.00) returned to Opponent2
+*** SHOW DOWN ***
+Opponent2 collected $2.00 from pot
+*** SUMMARY ***
+Total pot: $2.00 | Rake 0
+Seat 1: CT (small blind) folded before Flop
+Seat 2: Opponent2 (big blind) collected ($2.00)
+Seat 6: Opponent1 (button) folded before Flop (didn't bet)
+
+
+
