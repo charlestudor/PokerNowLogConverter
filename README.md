@@ -1,5 +1,11 @@
 # &#127137; Poker Now Log Converter &#127137;
-A simple command line utility for converting logs from Poker Now games to other formats.
+
+[![pypi](https://img.shields.io/pypi/v/poker_now_log_converter.svg)](https://pypi.org/project/poker_now_log_converter/)
+[![python](https://img.shields.io/pypi/pyversions/poker_now_log_converter.svg)](https://pypi.org/project/poker_now_log_converter/)
+[![Build Status](https://github.com/charlestudor/PokerNowLogConverter/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/charlestudor/PokerNowLogConverter/actions)
+
+A  command line utility for converting logs from Poker Now games to other formats.
+
 
 ## Introduction
 
