@@ -1,4 +1,4 @@
-# Poker Now Log Converter
+# &#127137; Poker Now Log Converter &#127137;
 A simple command line utility for converting logs from Poker Now games to other formats.
 
 ## Introduction
