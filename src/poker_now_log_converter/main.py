@@ -110,8 +110,8 @@ def add_aliases_interactively(game: Game):
         if new_alias:
             for player in groups:
                 updated_count = game.update_player_aliases(player.player_name_with_id, new_alias)
-                logging.info("Alias {new_alias} was added for player %s (matching %i hands)",
-                             player.player_name_with_id, updated_count)
+                logging.info("Alias %s} was added for player %s (matching %i hands)",
+                             new_alias, player.player_name_with_id, updated_count)
                 alias_list.append(f"{player.player_name_with_id}={new_alias}")
 
     updated_seen_players = game.seen_players
