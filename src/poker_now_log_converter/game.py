@@ -2,6 +2,7 @@
 """ Provides the Game class as part of the PokerNowLogConverter data model """
 
 import logging
+import re
 from collections import defaultdict
 from datetime import datetime
 from typing import List, Dict, DefaultDict
@@ -64,6 +65,8 @@ class Game:
         # The key is the player_name_with_id attribute.
         prev_action_dict: DefaultDict[str, float] = defaultdict(float)
         street_action_dict: Dict[str, List[Action]] = {}
+
+        poker_now_log = self.preprocess_log(poker_now_log)
 
         # Iterate over the log, building a new Hand object for each played hand
         for row in poker_now_log:
@@ -361,6 +364,43 @@ class Game:
 
         self.seen_players = set()
         self.refresh_seen_players()
+
+    @staticmethod
+    def preprocess_log(poker_now_log: List[List[str]]) -> List[List[str]]:
+        """ Before processing log, remove offending characters that might break parsing.
+
+        Args:
+            poker_now_log (List[List[str]]): The log to pre-process
+
+        Returns:
+             List[List[str]]: The pre-processed log
+        """
+        for row in poker_now_log:
+            line = row[0]
+
+            # Regex to match players in quotes
+            player_regex = re.compile("\"(.*?@.*?)\".*?")
+            matches = re.finditer(player_regex, line)
+            for match in matches:
+                player_str = match.group(1)
+
+                # Split player into name and id
+                split_index = player_str.rfind(" @ ")
+                name_part = player_str[0:split_index]
+                id_part = player_str[split_index+3:]
+
+                # Remove spaces and double quotes
+                name_part = name_part.replace(' ', '').replace('\"', '')
+
+                # Reconstruct player
+                processed_player = f"{name_part} @ {id_part}"
+
+                if processed_player != player_str:
+                    line = line.replace(player_str, processed_player)
+                    row[0] = line
+
+        return poker_now_log
+
 
     def set_hero(self, player_name: str):
         """ Sets the hero for every hand in this game.
