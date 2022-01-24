@@ -31,6 +31,8 @@ This project was written for my personal use, and is not affiliated, endorsed or
  
 ## Installation
 
+Poker Now Log Converter supports Python 3.8, 3.9 and 3.10.
+
 ### 1. Install via [Pip](http://www.pip-installer.org/):
 
     $ pip install poker-now-log-converter
