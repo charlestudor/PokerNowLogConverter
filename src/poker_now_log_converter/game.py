@@ -255,7 +255,7 @@ class Game:
                     player_id = player_name_with_id.split(" @ ")[1]
                     player_obj = Player(player_name=player_name, player_name_with_id=player_name_with_id,
                                         player_id=player_id)
-                    stack_size = int(player.split("\" (")[1].split(")")[0])
+                    stack_size = float(player.split("\" (")[1].split(")")[0])
 
                     current_hand.players.append(player_obj)
                     current_hand.seats.append(
@@ -270,7 +270,7 @@ class Game:
                     player_obj = Player(player_name=player_name, player_name_with_id=player_name_with_id,
                                         player_id=player_id)
                     seat_number = int(player.split(" \"")[0].split("#")[1])
-                    stack_size = int(player.split("\" (")[1].split(")")[0])
+                    stack_size = float(player.split("\" (")[1].split(")")[0])
 
                     current_hand.players.append(player_obj)
                     current_hand.seats.append(
