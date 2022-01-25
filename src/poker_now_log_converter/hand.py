@@ -3,7 +3,8 @@
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from random import getrandbits
+from pathlib import Path
+from random import getrandbits, seed
 from typing import List
 
 from action import Action
@@ -31,7 +32,7 @@ class Hand:
         hand_type (str): If this is a Texas Hold'Em hand or Omaha. TODO: ( omaha not currently supported)
         hand_start_datetime (datetime): The time of the hand starting. Note: Timezone is not provided by the PN log so
                                         must be provided by the user.
-        hand_number (int): The numerical hand number provided by the PN log. Not used in the converted output.
+        hand_number (int): The numerical hand number provided by the PN log.
         seats (List[Seat]): A list of Seat objects, one for each player sat down at the table.
 
         hole_cards (List[Card]): The hole cards dealt to the hero, if observed.
@@ -194,28 +195,39 @@ class Hand:
                 raise PNLogParsingException(f"Invalid action in actions list: {action}")
         return output_lines
 
-    def format_as_pokerstars_hand(self, currency: str, currency_symbol: str, timezone: str) -> List[str]:
+    def format_as_pokerstars_hand(self, currency: str, currency_symbol: str, timezone: str,
+                                  file_path_seed: str = None) -> List[str]:
         """ Converts Action objects into the format required by a PokerStars log
 
         Args:
             currency (str): The name of the currency to add to the hand metadata. (e.g GBP)
             currency_symbol (str): The desired currency symbol to prefix amount values with in the output. (e.g £)
             timezone (str): Timezone to append to the hand datetime (e.g GMT)
+            file_path_seed (str, optional): The original file path to be used as a seed to be used for
+                                                    generating a hand ID.
 
         Returns:
             List[str]: A list of strings representing this Hand, in valid PokerStars log hand notation.
         """
         output_lines = []
 
-        # Just use a random number for hand id
+        # For hand id generate a random number, but deterministic if the seed parameter is supplied
+        # This keeps hand ids consistent between generations.
+        random_seed = f"{Path(file_path_seed).stem}-{self.hand_number}" if file_path_seed else None
+        seed(a=random_seed)
         hand_id = getrandbits(64)
+
+        # Currency formatting
         big_blind = f"{currency_symbol}{self.big_blind_amount:,.2f}"
         small_blind = f"{currency_symbol}{self.small_blind_amount:,.2f}"
+
+        # Date format specified by PokerStars logs
         date_formatted = self.hand_start_datetime.strftime(f"%Y/%m/%d %H:%M:%S {timezone}")
 
         if not self.dealer:
             # Dead button, select the seat before the small blind
-            # (this isn't technically correct, as the button could be an empty seat instead)
+            # (this isn't technically correct, as the button could be an empty seat instead, however it seems to work
+            # for now)
             button_seat_id = self.small_blind_seat.seat_number - 1 if self.small_blind_seat.seat_number > 0 else 10
         else:
             button_seat = self.get_seat_by_player_name_with_id(self.dealer.player_name_with_id)

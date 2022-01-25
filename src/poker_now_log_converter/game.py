@@ -479,7 +479,8 @@ class Game:
         for hand in self.hand_list:
             hand_pokerstars_output = hand.format_as_pokerstars_hand(currency=self.currency,
                                                                     currency_symbol=self.currency_symbol,
-                                                                    timezone=self.timezone)
+                                                                    timezone=self.timezone,
+                                                                    file_path_seed=self.original_file_path)
             output_lines.extend(hand_pokerstars_output)
 
             # End with blank lines

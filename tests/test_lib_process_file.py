@@ -71,18 +71,12 @@ def test_input_file_one_converts_to_output_file_one() -> None:
     input_game = test_can_construct_game_from_input_file_one()
 
     # These settings were used to convert originally
-    input_game.update_player_aliases("CT @ eNVKMq2Tcb", "CT")
     input_game.set_hero("CT")
     input_game_converted = input_game.format_as_pokerstars_log()
 
     assert len(output_lines) == len(input_game_converted)
 
     for i in range(len(output_lines)):
-        # Remove random element (hand number)
-        if "PokerStars Hand" in input_game_converted[i]:
-            input_game_converted[i] = ":".join(input_game_converted[i].split(":")[1:])
-            output_lines[i] = ":".join(output_lines[i].split(":")[1:])
-
         assert output_lines[i] == input_game_converted[i]
 
 
@@ -95,9 +89,4 @@ def test_input_file_two_converts_to_output_file_two() -> None:
     assert len(output_lines) == len(input_game_converted)
 
     for i in range(len(output_lines)):
-        # Remove random element (hand number)
-        if "PokerStars Hand" in input_game_converted[i]:
-            input_game_converted[i] = ":".join(input_game_converted[i].split(":")[1:])
-            output_lines[i] = ":".join(output_lines[i].split(":")[1:])
-
         assert output_lines[i] == input_game_converted[i]

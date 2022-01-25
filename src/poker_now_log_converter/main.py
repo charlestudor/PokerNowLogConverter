@@ -14,7 +14,7 @@ from game import Game
 from utils import currencyCCToSymbol, PNLogParsingException
 
 
-def parse_file(filepath: str, currency: str = "USD", timezone: str = "ET"):
+def parse_file(filepath: str, currency: str = "USD", timezone: str = "ET") -> Game:
     """ Converts a single file containing a PokerNow game log into a Game object
 
     Args:
@@ -40,14 +40,15 @@ def parse_file(filepath: str, currency: str = "USD", timezone: str = "ET"):
         return None
 
 
-def save_game_to_file_pokerstars(game: Game, output_dir: str):
+def save_game_to_file_pokerstars(game: Game, output_dir: str, new_filename: str = None):
     """ Takes a game object and saves it as a text file in desired output directory.
 
     The outputted text file will in the PokerStars format.
 
     Args:
         game (obj:Game): The game object to be saved
-        output_dir (): The desired output directory to save the new log to.
+        output_dir (str): The desired output directory to save the new log to.
+        new_filename (str): If specified, the output file name.
 
     Returns:
 
@@ -61,7 +62,9 @@ def save_game_to_file_pokerstars(game: Game, output_dir: str):
         first_hand_bb = game.hand_list[0].big_blind_amount
         first_hand_ss = game.hand_list[0].small_blind_amount
         first_hand_type = game.hand_list[0].hand_type
-        new_filename = f"ConvertedPNLog-{first_hand_date_formatted}-" \
+
+        if not new_filename:
+            new_filename = f"ConvertedPNLog-{first_hand_date_formatted}-" \
                        f"{first_hand_ss}-{first_hand_bb}-{first_hand_type}.txt"
 
         # Create output directory create it if it doesn't exist already
