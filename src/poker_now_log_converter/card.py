@@ -2,9 +2,7 @@
 """ Provides the Card class as part of the PokerNowLogConverter data model"""
 
 from dataclasses import dataclass
-from typing import Dict
-
-from utils import InvalidCardException
+from typing import Dict, List
 
 strToEmoji: Dict[str, str] = {"c2": "2♣", "c3": "3♣", "c4": "4♣", "c5": "5♣", "c6": "6♣", "c7": "7♣", "c8": "8♣",
                               "c9": "9♣", "cT": "10♣", "cJ": "J♣", "cQ": "Q♣", "cK": "K♣", "cA": "A♣", "d2": "2♦",
@@ -23,6 +21,16 @@ emojiToStr: Dict[str, str] = {"2♣": "2c", "3♣": "3c", "4♣": "4c", "5♣": 
                               "J♥": "Jh", "Q♥": "Qh", "K♥": "Kh", "A♥": "Ah", "2♠": "2s", "3♠": "3s", "4♠": "4s",
                               "5♠": "5s", "6♠": "6s", "7♠": "7s", "8♠": "8s", "9♠": "9s", "10♠": "Ts", "J♠": "Js",
                               "Q♠": "Qs", "K♠": "Ks", "A♠": "As"}
+
+ranks_order: List[str] = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
+suits_order: List[str] = ["s", "h", "d", "c"]
+
+
+class InvalidCardException(Exception):
+    def __init__(self, message, card):
+        super().__init__(message)
+        self.card = card
+        self.message = message
 
 
 @dataclass(frozen=True)
@@ -48,20 +56,30 @@ class Card:
             # Frozen is set to True, so cannot change these in the usual manner
             super().__setattr__("card_emoji_str", strToEmoji.get(name))
             super().__setattr__("card_str", emojiToStr.get(self.card_emoji_str))
-            super().__setattr__("suit", self.card_str[0])
-            super().__setattr__("rank", self.card_str[1:])
+            super().__setattr__("rank", self.card_str[0])
+            super().__setattr__("suit", self.card_str[1:])
 
         elif name in emojiToStr:
             super().__setattr__("card_emoji_str", name)
             super().__setattr__("card_str", emojiToStr.get(name))
-            super().__setattr__("suit", self.card_str[0])
-            super().__setattr__("rank", self.card_str[1:])
+            super().__setattr__("rank", self.card_str[0])
+            super().__setattr__("suit", self.card_str[1:])
 
         else:
-            raise InvalidCardException("Invalid Card", name)
+            raise InvalidCardException(f"Invalid Card {name}", name)
 
     def __repr__(self):
         return self.card_str
 
     def __hash__(self):
         return hash(self.card_str)
+
+    def __gt__(self, other):
+        if ranks_order.index(self.rank) > ranks_order.index(other.rank):
+            return True
+        if ranks_order.index(self.rank) == ranks_order.index(other.rank):
+            if suits_order.index(self.suit) > suits_order.index(other.suit):
+                return True
+            else:
+                return False
+        return False

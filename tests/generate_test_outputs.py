@@ -38,4 +38,6 @@ def generate_outputs():
 
 
 if __name__ == "__main__":
-    generate_outputs()
+    # generate_outputs()
+    from utils import eval_final_hand
+    eval_final_hand([])
