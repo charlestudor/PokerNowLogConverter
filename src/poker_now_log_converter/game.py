@@ -12,7 +12,7 @@ from card import Card
 from hand import Hand
 from player import Player
 from seat import Seat
-from utils import currencyCCToSymbol
+from utils import currencyCCToSymbol, eval_final_hand
 
 
 class Game:
@@ -80,7 +80,8 @@ class Game:
                                       "on the Flop": current_hand.flop_actions,
                                       "on the Turn": current_hand.turn_actions,
                                       "on the River": current_hand.river_actions,
-                                      "at Showdown": current_hand.showdown_actions}
+                                      "at Showdown": current_hand.showdown_actions,
+                                      "at second Showdown": current_hand.run_it_twice_showdown_actions}
                 current_hand_state = "before Flop"
                 current_hand_street_max_bet = 0
 
@@ -277,13 +278,9 @@ class Game:
                         Seat(seat_player=player_obj, seat_number=seat_number, stack_size=stack_size))
             elif line.startswith("Your hand"):
                 hole_cards = [Card(x) for x in line.split("Your hand is ")[1].split(", ")]
-                # list(
-                # map(lambda x: Card(x), line.split("Your hand is ")[1].split(", ")))
                 current_hand.hole_cards = hole_cards
             elif line.startswith("flop:") or line.startswith("Flop:"):
                 flop_cards = [Card(x) for x in line.split("[")[1].split("]")[0].split(", ")]
-                # flop_cards = list(
-                #     map(lambda x: Card(x), line.split("[")[1].split("]")[0].split(", ")))
                 current_hand.flop_cards = flop_cards
                 current_hand.board.extend(flop_cards)
                 current_hand_state = "on the Flop"
@@ -303,19 +300,42 @@ class Game:
                 current_hand_state = "on the River"
                 current_hand_street_max_bet = 0
                 prev_action_dict = defaultdict(float)
+            elif line.startswith("Flop (second run):"):
+                second_flop_cards = [Card(x) for x in line.split("[")[1].split("]")[0].split(", ")]
+                current_hand.run_it_twice_flop_cards = second_flop_cards
+                current_hand.run_it_twice_board.extend(second_flop_cards)
+                current_hand_state = "on the Flop"
+                current_hand_street_max_bet = 0
+                prev_action_dict = defaultdict(float)
+            elif line.startswith("Turn (second run):"):
+                second_turn_card = Card(line.split("[")[1].split("]")[0])
+                current_hand.run_it_twice_turn_card = second_turn_card
+                current_hand.run_it_twice_board.append(second_turn_card)
+                current_hand_state = "on the Turn"
+                current_hand_street_max_bet = 0
+                prev_action_dict = defaultdict(float)
+            elif line.startswith("River (second run):"):
+                second_river_card = Card(line.split("[")[1].split("]")[0])
+                current_hand.run_it_twice_river_card = second_river_card
+                current_hand.run_it_twice_board.append(second_river_card)
+                current_hand_state = "on the River"
+                current_hand_street_max_bet = 0
+                prev_action_dict = defaultdict(float)
             elif "\" shows a " in line:
                 player_name_with_id = line.split("\" ")[0].split("\"")[1]
                 p_seat = current_hand.get_seat_by_player_name_with_id(player_name_with_id)
                 p_obj = current_hand.get_player_by_player_name_with_id(player_name_with_id)
 
-                cards = f"[{' '.join(list(map(lambda x: Card(x).card_str, line.split('shows a ')[1].split('.')[0].split(', '))))}]"
+                card_objects = list(map(lambda x: Card(x), line.split('shows a ')[1].split('.')[0].split(', '                                                                                             '')))
+                cards = f"[{' '.join([c.card_str for c in card_objects])}]"
                 p_seat.seat_hole_cards = cards
+                p_seat.seat_hole_cards_obj = card_objects
 
                 street_action_dict[current_hand_state].append(Action(player=p_obj, action="show", cards_shown=cards))
 
             elif "\" collected " in line or "\" gained " in line or " wins " in line:
                 line = line.replace("gained", "collected")
-                current_hand_state = "at Showdown"
+                current_hand_state = "at second Showdown" if "second run" in line else "at Showdown"
 
                 if " wins " in line:
                     # Legacy log format
@@ -333,30 +353,63 @@ class Game:
 
                 player_name_with_id = line.split("\" ")[0].split("\"")[1]
                 p_seat = current_hand.get_seat_by_player_name_with_id(player_name_with_id)
-                p_seat.collected_amount += collected_amount
+                if "second run" in line:
+                    p_seat.collected_amount_second_run += collected_amount
+                else:
+                    p_seat.collected_amount += collected_amount
 
                 p_obj = current_hand.get_player_by_player_name_with_id(player_name_with_id)
                 street_action_dict[current_hand_state].append(
                     Action(player=p_obj, action="collect", bet_amount=collected_amount))
 
                 if " with " in line:
-                    if "(hand: " in line:
-                        hole_cards = " ".join(
-                            list(map(lambda x: Card(x).card_str, line.split("(hand: ")[1].split(")")[0].split(", "))))
-                        p_seat.seat_hole_cards = f"[{hole_cards}]"
 
-                    winning_hand = line.split("with ")[1].split(" (")[0]
-                    p_seat.seat_summary = f"showed {p_seat.seat_hole_cards} and won " \
-                                          f"({self.currency_symbol}{p_seat.collected_amount:,.2f}) " \
-                                          f"with {winning_hand}"
+                    # This is for old logs, you had to get their hole cards from this collection line
+                    if "(hand: " in line:
+                        hole_card_objects = list(map(lambda x: Card(x), line.split("(hand: ")[1].split(")")[
+                            0].split(", ")))
+                        hole_cards = " ".join([c.card_str for c in hole_card_objects])
+                        p_seat.seat_hole_cards = f"[{hole_cards}]"
+                        p_seat.seat_hole_cards_obj = hole_card_objects
+
+                    # If this is a second run, handle it slightly differently
+                    if "second run" in line:
+                        # Calculate the winning hand ourselves
+                        winning_hand = eval_final_hand(p_seat.seat_hole_cards_obj + current_hand.run_it_twice_board)[0]
+
+                        # OLD: get the hand result from log itself
+                        # winning_hand = line.split("with ")[1].split(" on the second run")[0]
+
+                        # Beware of the collected amount here, it is not the total collected, but just from this board
+                        p_seat.seat_run_it_twice_summary = ", and won " \
+                                                           f"({self.currency_symbol}{p_seat.collected_amount_second_run:,.2f}) " \
+                                                           f"with {winning_hand}"
+
+                    else:
+                        # Calculate the winning hand ourselves
+                        winning_hand = eval_final_hand(p_seat.seat_hole_cards_obj + current_hand.board)[0]
+
+                        # OLD: get the hand result from log itself
+                        # winning_hand = line.split("with ")[1].split(" (")[0]
+
+                        p_seat.seat_summary = f"showed {p_seat.seat_hole_cards} and won " \
+                                              f"({self.currency_symbol}{p_seat.collected_amount:,.2f}) " \
+                                              f"with {winning_hand}"
                 else:
                     p_seat.seat_summary = f"collected ({self.currency_symbol}{p_seat.collected_amount:,.2f})"
 
+            elif "All players in hand choose to run it twice." == line:
+                current_hand.run_it_twice = True
+                current_hand.run_it_twice_from_street = current_hand_state
+                current_hand.run_it_twice_board = current_hand.board[:]
             else:
                 if not (
-                        "joined" in line or "requested" in line or "quits" in line or "created" in line
-                        or "approved" in line or "changed" in line or "enqueued" in line or " stand up " in line
-                        or " sit back " in line or " canceled the seat " in line):
+                        "joined" in line or "requested" in line or "quits" in line or "created" in line or "approved"
+                        in line or "changed" in line or "enqueued" in line or " stand up " in line or " sit back " in
+                        line or " canceled the seat " in line or " decide whether to run it twice" in line or
+                        "chooses to  run it twice." in line or "Dead Small Blind" == line or "The admin updated the "
+                                                                                             "player " in line or
+                        "the admin queued the stack change " in line):
                     logging.warning("State not considered: %s", line)
 
             if current_hand:
@@ -387,7 +440,7 @@ class Game:
                 # Split player into name and id
                 split_index = player_str.rfind(" @ ")
                 name_part = player_str[0:split_index]
-                id_part = player_str[split_index+3:]
+                id_part = player_str[split_index + 3:]
 
                 # Remove spaces and double quotes
                 name_part = name_part.replace(' ', '').replace('\"', '')
@@ -400,7 +453,6 @@ class Game:
                     row[0] = line
 
         return poker_now_log
-
 
     def set_hero(self, player_name: str):
         """ Sets the hero for every hand in this game.

@@ -11,7 +11,7 @@ from action import Action
 from card import Card
 from player import Player
 from seat import Seat
-from utils import PNLogParsingException
+from utils import PNLogParsingException, eval_final_hand
 
 
 @dataclass
@@ -42,6 +42,13 @@ class Hand:
         board (List[Card]): A list of all community cards.
         total_pot (float): The size of the pot at the end of the hand.
 
+        run_it_twice (bool): If the players agreed to run the hand twice
+        run_it_twice_from_street (str): The street run it twice was agreed on
+        run_it_twice_flop_cards (List[Card]): Second run flop cards
+        run_it_twice_turn_card (obj:Card): Second run turn card
+        run_it_twice_river_card (obj:Card): Second run river card
+        run_it_twice_board (List[Card]): All community cards in second run.
+
         players (List[Player]): A list of player objects for each player in this hand.
         dealer (obj:Player): The player object for the dealer in this hand. Note: dealer is also known as the button
         hero_player (obj:Player): The player object for the hero in this hand, if there is a match. Hero is set using
@@ -62,6 +69,7 @@ class Hand:
         turn_actions (List[Action]): List of Actions that occurred on the turn
         river_actions (List[Action]): List of Actions that occurred on the river
         showdown_actions (List[Action]): List of Actions that occurred at showdown
+        run_it_twice_showdown_actions (List[Action]): List of Actions that occurred at second showdown
     """
     raw_strings: List[str] = field(default_factory=list)
     hand_type: str = None
@@ -75,6 +83,13 @@ class Hand:
     river_card: Card = None
     board: List[Card] = field(default_factory=list)
     total_pot: float = 0
+
+    run_it_twice: bool = False
+    run_it_twice_from_street: str = None
+    run_it_twice_flop_cards: List[Card] = field(default_factory=list)
+    run_it_twice_turn_card: Card = None
+    run_it_twice_river_card: Card = None
+    run_it_twice_board: List[Card] = field(default_factory=list)
 
     players: List[Player] = field(default_factory=list)
     dealer: Player = None
@@ -93,6 +108,7 @@ class Hand:
     turn_actions: List[Action] = field(default_factory=list)
     river_actions: List[Action] = field(default_factory=list)
     showdown_actions: List[Action] = field(default_factory=list)
+    run_it_twice_showdown_actions: List[Action] = field(default_factory=list)
 
     def get_seat_by_player_name_with_id(self, player_name_with_id: str) -> Seat:
         """ Gets a seat in this hand where a given player is sat, if it exists.
@@ -273,44 +289,96 @@ class Hand:
         # Flop
         flop_cards = " ".join(list(map(lambda x: x.card_str, self.flop_cards))) if len(self.flop_cards) > 0 else None
         if flop_cards:
-            output_lines.append(f"*** FLOP *** [{flop_cards}]")
+            if len(self.run_it_twice_flop_cards) > 0:
+                output_lines.append(f"*** FIRST FLOP *** [{flop_cards}]")
+            else:
+                output_lines.append(f"*** FLOP *** [{flop_cards}]")
             flop_actions_str = self.format_actions_pokerstars(self.flop_actions, currency_symbol=currency_symbol)
             output_lines.extend(flop_actions_str)
 
         # Turn
         turn_card = self.turn_card.card_str if self.turn_card else None
         if turn_card:
-            output_lines.append(f"*** TURN *** [{flop_cards}] [{turn_card}]")
+            if self.run_it_twice_turn_card:
+                output_lines.append(f"*** FIRST TURN *** [{flop_cards}] [{turn_card}]")
+            else:
+                output_lines.append(f"*** TURN *** [{flop_cards}] [{turn_card}]")
             turn_actions_str = self.format_actions_pokerstars(self.turn_actions, currency_symbol=currency_symbol)
             output_lines.extend(turn_actions_str)
 
         # River
         river_card = self.river_card.card_str if self.river_card else None
         if river_card:
-            output_lines.append(f"*** RIVER *** [{flop_cards} {turn_card}] [{river_card}]")
+            if self.run_it_twice_river_card:
+                output_lines.append(f"*** FIRST RIVER *** [{flop_cards} {turn_card}] [{river_card}]")
+            else:
+                output_lines.append(f"*** RIVER *** [{flop_cards} {turn_card}] [{river_card}]")
             river_actions_str = self.format_actions_pokerstars(self.river_actions, currency_symbol=currency_symbol)
             output_lines.extend(river_actions_str)
 
+        # Deal with second run if any
+        second_flop_cards = " ".join(list(map(lambda x: x.card_str, self.run_it_twice_flop_cards))) if len(
+            self.run_it_twice_flop_cards) > 0 else None
+        if second_flop_cards:
+            output_lines.append(f"*** SECOND FLOP *** [{second_flop_cards}]")
+        second_turn_card = self.run_it_twice_turn_card.card_str if self.run_it_twice_turn_card else None
+        if second_turn_card:
+            output_lines.append(f"*** SECOND TURN *** [{second_flop_cards or flop_cards}] [{second_turn_card}]")
+        second_river_card = self.run_it_twice_river_card.card_str if self.run_it_twice_river_card else None
+        if second_river_card:
+            output_lines.append(f"*** SECOND RIVER *** [{second_flop_cards or flop_cards} "
+                                f"{second_turn_card or turn_card}] [{second_river_card}]")
+
         # Showdown
-        output_lines.append("*** SHOW DOWN ***")
+        output_lines.append("*** FIRST SHOW DOWN ***") if self.run_it_twice else output_lines.append(
+            "*** SHOW DOWN ***")
         showdown_actions_str = self.format_actions_pokerstars(self.showdown_actions, currency_symbol=currency_symbol)
         output_lines.extend(showdown_actions_str)
 
+        if self.run_it_twice:
+            output_lines.append("*** SECOND SHOW DOWN ***")
+            second_showdown_actions_str = self.format_actions_pokerstars(self.run_it_twice_showdown_actions,
+                                                                         currency_symbol=currency_symbol)
+            output_lines.extend(second_showdown_actions_str)
+
         # Summary
         output_lines.append("*** SUMMARY ***")
+        # TODO: Support for Main Pot / Side Pot formatting
         output_lines.append(f"Total pot: {currency_symbol}{self.total_pot:,.2f} | Rake 0")
 
-        if len(self.board) > 0:
+        if self.run_it_twice:
+            output_lines.append("Hand was run twice")
+            if len(self.board) > 0:
+                board = " ".join(list(map(lambda x: x.card_str, self.board)))
+                output_lines.append(f"FIRST Board: [{board}]")
+            if len(self.run_it_twice_board) > 0:
+                second_board = " ".join(list(map(lambda x: x.card_str, self.run_it_twice_board)))
+                output_lines.append(f"SECOND Board: [{second_board}]")
+        elif len(self.board) > 0:
             board = " ".join(list(map(lambda x: x.card_str, self.board)))
             output_lines.append(f"Board: [{board}]")
 
+        # Each seat gets a line in the summary section
         for seat in self.seats:
-            summary = f"Seat {seat.seat_number}: " \
+
+            # Work out what player had if we know their cards (PokerNow doesn't show it, but PokerStars does)
+            if seat.seat_summary == "didn\'t show and lost" and seat.seat_hole_cards != '':
+                best_hand = eval_final_hand(seat.seat_hole_cards_obj + self.board)[0]
+                seat.seat_summary = f"showed {seat.seat_hole_cards} and lost with {best_hand}"
+
+            # If we have run it twice, and we know this players cards but don't have a run twice summary set, this means
+            # they must have lost. (Or folded and showed cards afterwards)
+            if self.run_it_twice and seat.seat_run_it_twice_summary == '' and seat.seat_hole_cards != '':
+                best_hand = eval_final_hand(seat.seat_hole_cards_obj + self.run_it_twice_board)[0]
+                seat.seat_run_it_twice_summary = f", and lost with {best_hand}"
+
+            # Now construct the seat summary line
+            summary_line = f"Seat {seat.seat_number}: " \
                       f"{seat.seat_player.alias_name or seat.seat_player.player_name}{seat.seat_desc} " \
-                      f"{seat.seat_summary}"
+                      f"{seat.seat_summary}{seat.seat_run_it_twice_summary}"
             # If we know the hole cards (and they weren't mentioned earlier in the summary, put them at the end)
             if "showed" not in seat.seat_summary and seat.seat_hole_cards:
-                summary += " " + seat.seat_hole_cards
-            output_lines.append(summary)
+                summary_line += " " + seat.seat_hole_cards
+            output_lines.append(summary_line)
 
         return output_lines
