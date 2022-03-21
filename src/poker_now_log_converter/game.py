@@ -223,7 +223,8 @@ class Game:
                     small_blind_seat.seat_desc = " (small blind)"
                     if small_blind_amount > current_hand_street_max_bet:
                         current_hand_street_max_bet = small_blind_amount
-                    prev_action_dict[small_blind_player_name_with_id] = small_blind_amount
+
+                    # prev_action_dict[small_blind_player_name_with_id] = small_blind_amount
 
                     current_hand.missing_small_blinds.append(
                         current_hand.get_player_by_player_name_with_id(small_blind_player_name_with_id))
@@ -344,10 +345,10 @@ class Game:
                     collected_amount = float(line.split("\" collected ")[1].split(" from pot")[0])
 
                 # PokerNow seems to calculate collected amount wrong when there are missing small blinds, so subtract
-                # them here
+                # them here. Double check this is not an issue, then remove this comment block
                 # TODO: What happens with a split pot and missing small blind?
-                if len(current_hand.missing_small_blinds) > 0:
-                    collected_amount -= (current_hand.small_blind_amount * len(current_hand.missing_small_blinds))
+                # if len(current_hand.missing_small_blinds) > 0:
+                #     collected_amount -= (current_hand.small_blind_amount * len(current_hand.missing_small_blinds))
 
                 current_hand.total_pot += collected_amount
 
