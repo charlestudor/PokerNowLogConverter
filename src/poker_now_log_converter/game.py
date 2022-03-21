@@ -18,7 +18,7 @@ from utils import currencyCCToSymbol, eval_final_hand
 class Game:
     """ A class representing a game of poker, which is comprised of many hands of poker.
 
-    The Game class is initialised using a list of strings which comprise a PokerNow log. The initialiser reads the
+    The Game class is initialised using a list of strings which comprise a PokerNow log. The initializer reads the
     log line by line, creating Hand objects for each hand in the log, which are stored in a list of hands.
 
     Once the game object is initialised, the hero name or aliases can be set, which propagates to each hand in the list.
@@ -39,7 +39,7 @@ class Game:
 
     def __init__(self, poker_now_log: List[List[str]], currency: str = "USD", timezone: str = "ET",
                  original_filename: str = None):
-        """ The initialiser for a game object. Requires PokerNow log strings as input to parse
+        """ The initializer for a game object. Requires PokerNow log strings as input to parse
 
         Args:
             poker_now_log (List[List[str]]): The list of PokerNow log lines to parse.
@@ -326,7 +326,7 @@ class Game:
                 p_seat = current_hand.get_seat_by_player_name_with_id(player_name_with_id)
                 p_obj = current_hand.get_player_by_player_name_with_id(player_name_with_id)
 
-                card_objects = list(map(lambda x: Card(x), line.split('shows a ')[1].split('.')[0].split(', '                                                                                             '')))
+                card_objects = [Card(x) for x in line.split('shows a ')[1].split('.')[0].split(', ')]
                 cards = f"[{' '.join([c.card_str for c in card_objects])}]"
                 p_seat.seat_hole_cards = cards
                 p_seat.seat_hole_cards_obj = card_objects
@@ -366,8 +366,7 @@ class Game:
 
                     # This is for old logs, you had to get their hole cards from this collection line
                     if "(hand: " in line:
-                        hole_card_objects = list(map(lambda x: Card(x), line.split("(hand: ")[1].split(")")[
-                            0].split(", ")))
+                        hole_card_objects = [Card(x) for x in line.split("(hand: ")[1].split(")")[0].split(", ")]
                         hole_cards = " ".join([c.card_str for c in hole_card_objects])
                         p_seat.seat_hole_cards = f"[{hole_cards}]"
                         p_seat.seat_hole_cards_obj = hole_card_objects
@@ -382,7 +381,8 @@ class Game:
 
                         # Beware of the collected amount here, it is not the total collected, but just from this board
                         p_seat.seat_run_it_twice_summary = ", and won " \
-                                                           f"({self.currency_symbol}{p_seat.collected_amount_second_run:,.2f}) " \
+                                                           f"({self.currency_symbol}" \
+                                                           f"{p_seat.collected_amount_second_run:,.2f}) " \
                                                            f"with {winning_hand}"
 
                     else:
@@ -393,7 +393,8 @@ class Game:
                         # winning_hand = line.split("with ")[1].split(" (")[0]
 
                         p_seat.seat_summary = f"showed {p_seat.seat_hole_cards} and won " \
-                                              f"({self.currency_symbol}{p_seat.collected_amount:,.2f}) " \
+                                              f"({self.currency_symbol}" \
+                                              f"{p_seat.collected_amount:,.2f}) " \
                                               f"with {winning_hand}"
                 else:
                     p_seat.seat_summary = f"collected ({self.currency_symbol}{p_seat.collected_amount:,.2f})"

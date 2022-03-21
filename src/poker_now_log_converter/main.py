@@ -8,13 +8,13 @@ import logging
 import sys
 from itertools import groupby
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 from game import Game
 from utils import currencyCCToSymbol, PNLogParsingException
 
 
-def parse_file(filepath: str, currency: str = "USD", timezone: str = "ET") -> Game:
+def parse_file(filepath: str, currency: str = "USD", timezone: str = "ET") -> Optional[Game]:
     """ Converts a single file containing a PokerNow game log into a Game object
 
     Args:
@@ -40,7 +40,7 @@ def parse_file(filepath: str, currency: str = "USD", timezone: str = "ET") -> Ga
         return None
 
 
-def save_game_to_file_pokerstars(game: Game, output_dir: str, new_filename: str = None):
+def save_game_to_file_pokerstars(game: Game, output_dir: str, new_filename: str = None) -> List[str]:
     """ Takes a game object and saves it as a text file in desired output directory.
 
     The outputted text file will in the PokerStars format.
@@ -51,7 +51,7 @@ def save_game_to_file_pokerstars(game: Game, output_dir: str, new_filename: str 
         new_filename (str): If specified, the output file name.
 
     Returns:
-
+        List[str]: The list of log lines that were saved to a file.
     """
     try:
         # Get lines to be saved to file
@@ -65,7 +65,7 @@ def save_game_to_file_pokerstars(game: Game, output_dir: str, new_filename: str 
 
         if not new_filename:
             new_filename = f"ConvertedPNLog-{first_hand_date_formatted}-" \
-                       f"{first_hand_ss}-{first_hand_bb}-{first_hand_type}.txt"
+                           f"{first_hand_ss}-{first_hand_bb}-{first_hand_type}.txt"
 
         # Create output directory create it if it doesn't exist already
         output_path = Path(output_dir).resolve()
@@ -77,7 +77,7 @@ def save_game_to_file_pokerstars(game: Game, output_dir: str, new_filename: str 
         new_filename_path = output_path / new_filename
 
         with open(new_filename_path, "w", encoding="utf-8") as out_file:
-            _ = [print(l, file=out_file) for l in formatted_lines]
+            _ = [print(line, file=out_file) for line in formatted_lines]
 
         logging.info("Saved output file: %s", new_filename_path)
         return formatted_lines
@@ -86,7 +86,17 @@ def save_game_to_file_pokerstars(game: Game, output_dir: str, new_filename: str 
         raise err
 
 
-def add_aliases_interactively(game: Game):
+def add_aliases_interactively(game: Game) -> None:
+    """ Groups players seen during a game and asks for user input to provide an alias for each player.
+
+    Called when using tool from command line with -i flag.
+
+    Args:
+        game (obj:Game): The Game object to add aliases for.
+
+    Returns:
+        None
+    """
     seen_players = sorted(list(game.seen_players), key=lambda x: x.player_id)
     seen_players_list = ", ".join(list(map(lambda x: x.player_name_with_id, seen_players)))
     logging.info("*** INTERACTIVE ALIAS SETUP ***")
@@ -113,8 +123,8 @@ def add_aliases_interactively(game: Game):
         if new_alias:
             for player in groups:
                 updated_count = game.update_player_aliases(player.player_name_with_id, new_alias)
-                logging.info("Alias %s} was added for player %s (matching %i hands)",
-                             new_alias, player.player_name_with_id, updated_count)
+                logging.info("Alias %s} was added for player %s (matching %i hands)", new_alias,
+                             player.player_name_with_id, updated_count)
                 alias_list.append(f"{player.player_name_with_id}={new_alias}")
 
     updated_seen_players = game.seen_players
@@ -124,6 +134,7 @@ def add_aliases_interactively(game: Game):
 
 
 def setup_arg_parser():
+    """ Sets up argument parser. Called when running as script / module. """
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", "--outputDir", type=str,
                         help="Specify output directory to save logs to. Defaults to current folder.")
@@ -151,9 +162,29 @@ def setup_arg_parser():
     return args
 
 
-def convert_pokernow_files(hero_name: str, input_filename: str = None, input_directory: str = None,
-                           raw_input: List = None, output_directory: str = None, currency: str = "USD",
-                           timezone: str = "ET", aliases: List[List[str]] = None, save_file: bool = True):
+def convert_poker_now_files(hero_name: str, input_filename: str = None, input_directory: str = None,
+                            raw_input: List = None, output_directory: str = None, currency: str = "USD",
+                            timezone: str = "ET", aliases: List[List[str]] = None, save_file: bool = True)\
+        -> List[List[str]]:
+    """ Converts one or more poker now log files to Pokerstars format.
+
+    Intended to be used as a library function. Not invoked by main script endpoint.
+
+    Args:
+        hero_name (str): Hero name
+        input_filename (str, optional): File to be converted, if only one to be processed.
+        input_directory (str, optional): Path to directory, if converting multiple files.
+        raw_input (list, optional): The raw list of log lines, to be used instead of reading from a file.
+        output_directory (str, optional): An output directory if files are to be outputted.
+        currency (str, optional): Currency to use. USD is default.
+        timezone (str, optional): Timezone to use. ET is default
+        aliases (List[List[str]], optional): A list of aliases to use in format: [["P1Name", "P1Alias"],..]
+        save_file (bool): Whether to save the file to the provided output directory. Default is True.
+
+    Returns:
+        List[List[str]]: A list of parsed log lines for each game.
+    """
+
     if not input_filename and not input_directory and not raw_input:
         raise ValueError("Illegal Arguments: Must specify input file, directory or raw input to convert.")
 
@@ -197,22 +228,27 @@ def convert_pokernow_files(hero_name: str, input_filename: str = None, input_dir
     for parsed_game in game_objects:
         if aliases:
             for alias in aliases:
-                parsed_game.updatePlayerAliases(alias[0], alias[1])
+                parsed_game.update_player_aliases(alias[0], alias[1])
 
         # Set hero name
-        parsed_game.setHero(hero_name)
+        parsed_game.set_hero(hero_name)
 
         if save_file:
             # Convert to pokerstars format and save to file
             output = save_game_to_file_pokerstars(parsed_game, output_dir=output_directory)
             formatted_output.append(output)
         else:
-            output = parsed_game.formatAsPokerstarsLog()
+            output = parsed_game.format_as_pokerstars_log()
             formatted_output.append(output)
     return formatted_output
 
 
-def main():
+def main() -> int:
+    """ Main entry point for running converter as a script or module.
+
+    Returns:
+        int: Status code 0 or 1. Code 0 does not guarantee conversion was successful.
+    """
     args = setup_arg_parser()
 
     if args.quiet:
@@ -221,6 +257,8 @@ def main():
         logging.basicConfig(level=logging.INFO, format="%(message)s", stream=sys.stdout)
 
     logging.info("Poker Now Log Converter Started...")
+
+    # Enforce various argument requirements
 
     if not args.heroName:
         logging.error("Hero name must be set (The player cards are being dealt to)."
@@ -249,6 +287,7 @@ def main():
         logging.info("No timezone specified. Using ET")
         timezone = "ET"
 
+    # Get either single file or multiple to convert from arguments
     files_to_convert = []
     if args.filename:
         file_path = Path(args.filename).resolve()
@@ -259,6 +298,7 @@ def main():
             if child.suffix in [".csv", ".txt"]:
                 files_to_convert.append(child)
 
+    # Attempt to convert each file
     for file in files_to_convert:
         logging.info("Attempting to load file: \"%s\"", file)
 
@@ -277,7 +317,7 @@ def main():
                 for alias_str in aliases:
                     player_name_with_id = alias_str.split("=")[0]
                     alias_name = alias_str.split("=")[1]
-                    updated_count = parsed_game.updatePlayerAliases(player_name_with_id, alias_name)
+                    updated_count = parsed_game.update_player_aliases(player_name_with_id, alias_name)
                     logging.info("Alias %s was added for player %s (matching %i hands)", alias_name,
                                  player_name_with_id, updated_count)
             except ValueError:
@@ -302,4 +342,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

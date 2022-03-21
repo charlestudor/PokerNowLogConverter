@@ -48,7 +48,7 @@ class Card:
 
     def __init__(self, name: str):
         """
-        Initialiser for the Card class.
+        Initializer for the Card class.
         Args:
             name: String representing the card, in either standard or emoji format
         """

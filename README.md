@@ -80,8 +80,8 @@ As a command line tool:
 As a library:
 
     $ python
-    >>> from poker_now_log_converter.main import convert_pokernow_files
-    >>> convert_pokernow_files(hero_name="CT", input_filename="./PNLogExample.txt")
+    >>> from poker_now_log_converter.main import convert_poker_now_files
+    >>> convert_poker_now_files(hero_name="CT", input_filename="./PNLogExample.txt")
     
 ## Contributing
 

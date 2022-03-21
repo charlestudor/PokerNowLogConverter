@@ -9,8 +9,8 @@ from main import parse_file, save_game_to_file_pokerstars
 def generate_outputs():
     """ Generates an example for each input in the input_examples folder"""
 
-    input_folder = Path('.\input_examples').resolve()
-    output_folder = Path('.\output_examples').resolve()
+    input_folder = Path('.\\input_examples').resolve()
+    output_folder = Path('.\\output_examples').resolve()
 
     files_to_convert = []
     for child in input_folder.iterdir():

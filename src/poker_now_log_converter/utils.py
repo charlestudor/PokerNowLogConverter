@@ -52,8 +52,8 @@ def open_text_file(path: str):
 
 def hash_cards(cards: List[Card]) -> int:
     """ Creates a hash value for a set of cards. Should be ordered from highest to lowest rank in parameter."""
-    cards = list(cards)
-    cards.reverse()
+    cards = list(cards)  # Copy list
+    cards.reverse()  # Sort High to low (default is low to high)
 
     hash_value = 0
     for i, c in enumerate(cards):
@@ -62,7 +62,7 @@ def hash_cards(cards: List[Card]) -> int:
     return hash_value
 
 
-def eval_final_hand(cards: List[Card]) -> str:
+def eval_final_hand(cards: List[Card]) -> Optional[Tuple[str, PokerHand, int]]:
     """ Turns a list of 7 cards into a string representation of the best hand possible with those 7 """
     cards.sort(reverse=True)
 
@@ -111,18 +111,18 @@ def eval_final_hand(cards: List[Card]) -> str:
     return hands_with_value[0]
 
 
-def high_card(hand: List[Card]) -> Optional[Tuple[str, PokerHand, int]]:
+def high_card(hand: Tuple[Card]) -> Optional[Tuple[str, PokerHand, int]]:
     """ Return the high card string for this hand """
     rank_histogram, _ = create_cards_histogram(hand)
 
     for rank in rank_histogram:
         if rank_histogram[rank] > 0:
-            return f"high card {hand_rank_names_singular[rank]}", PokerHand.HIGH_CARD, hash_cards(hand)
+            return f"high card {hand_rank_names_singular[rank]}", PokerHand.HIGH_CARD, hash_cards(list(hand))
 
     return None
 
 
-def is_pair(hand: List[Card]) -> Optional[Tuple[str, PokerHand, int]]:
+def is_pair(hand: Tuple[Card]) -> Optional[Tuple[str, PokerHand, int]]:
     """ If this hand contains a pair, return string representation of it """
     rank_histogram, _ = create_cards_histogram(hand)
 
@@ -141,7 +141,7 @@ def is_pair(hand: List[Card]) -> Optional[Tuple[str, PokerHand, int]]:
     return None
 
 
-def is_two_pair(hand: List[Card]) -> Optional[Tuple[str, PokerHand, int]]:
+def is_two_pair(hand: Tuple[Card]) -> Optional[Tuple[str, PokerHand, int]]:
     """ If this hand contains two pair, return string representation of it """
     rank_histogram, _ = create_cards_histogram(hand)
 
@@ -161,12 +161,13 @@ def is_two_pair(hand: List[Card]) -> Optional[Tuple[str, PokerHand, int]]:
                 hash_value = hash_cards(remaining_card) + (hand_rank_values[two_pair[1]] * pow(BASE_K, 1)) + (
                         hand_rank_values[two_pair[0]] * pow(BASE_K, 2))
 
-                return f"two pair, {hand_rank_names_plural[two_pair[0]]} and {hand_rank_names_plural[two_pair[1]]}", PokerHand.TWO_PAIR, hash_value
+                return f"two pair, {hand_rank_names_plural[two_pair[0]]} and {hand_rank_names_plural[two_pair[1]]}",\
+                       PokerHand.TWO_PAIR, hash_value
 
     return None
 
 
-def is_three_of_a_kind(hand: List[Card]) -> Optional[Tuple[str, PokerHand, int]]:
+def is_three_of_a_kind(hand: Tuple[Card]) -> Optional[Tuple[str, PokerHand, int]]:
     """ If this hand contains a set, return string representation of it """
     rank_histogram, _ = create_cards_histogram(hand)
 
@@ -186,7 +187,7 @@ def is_three_of_a_kind(hand: List[Card]) -> Optional[Tuple[str, PokerHand, int]]
     return None
 
 
-def is_straight(hand: List[Card]) -> Optional[Tuple[str, PokerHand, int]]:
+def is_straight(hand: Tuple[Card]) -> Optional[Tuple[str, PokerHand, int]]:
     """ If this hand contains a straight, return string representation of it """
     rank_histogram, _ = create_cards_histogram(hand)
 
@@ -203,23 +204,23 @@ def is_straight(hand: List[Card]) -> Optional[Tuple[str, PokerHand, int]]:
             # For the hash value, we can just use the top of the streak
             hash_value = hand_rank_values[top_of_streak]
 
-            return f"a straight, {hand_rank_names_singular[rank]} to {hand_rank_names_singular[top_of_streak]}", PokerHand.STRAIGHT, hash_value
+            return f"a straight, {hand_rank_names_singular[rank]} to {hand_rank_names_singular[top_of_streak]}",\
+                   PokerHand.STRAIGHT, hash_value
 
         # Account for low ace
         if i == len(list(rank_histogram.keys())) - 1 and streak == 3 and rank == "2" and any(
                 [c for c in hand if c.rank == "A"]):
-
             # In this case, top is always 5
             top_of_streak = "5"
             # For the hash value, we can just use the top of the streak
             hash_value = hand_rank_values[top_of_streak]
-            return f"a straight, {hand_rank_names_singular['A']} to {hand_rank_names_singular[top_of_streak]}", \
+            return f"a straight, {hand_rank_names_singular['A']} to {hand_rank_names_singular[top_of_streak]}",\
                    PokerHand.STRAIGHT, hash_value
 
     return None
 
 
-def is_flush(hand: List[Card]) -> Optional[Tuple[str, PokerHand, int]]:
+def is_flush(hand: Tuple[Card]) -> Optional[Tuple[str, PokerHand, int]]:
     """ If this hand contains a flush, return string representation of it """
     rank_histogram, suit_histogram = create_cards_histogram(hand)
 
@@ -237,7 +238,7 @@ def is_flush(hand: List[Card]) -> Optional[Tuple[str, PokerHand, int]]:
     return f"a flush, {hand_rank_names_singular[highest_card]} high", PokerHand.FLUSH, hash_value
 
 
-def is_full_house(hand: List[Card]) -> Optional[Tuple[str, PokerHand, int]]:
+def is_full_house(hand: Tuple[Card]) -> Optional[Tuple[str, PokerHand, int]]:
     """ If this hand contains a full house, return string representation of it """
     rank_histogram, _ = create_cards_histogram(hand)
 
@@ -265,7 +266,7 @@ def is_full_house(hand: List[Card]) -> Optional[Tuple[str, PokerHand, int]]:
     return None
 
 
-def is_four_of_a_kind(hand: List[Card]) -> Optional[Tuple[str, PokerHand, int]]:
+def is_four_of_a_kind(hand: Tuple[Card]) -> Optional[Tuple[str, PokerHand, int]]:
     """ If this hand contains four of a kind, return string representation of it """
     rank_histogram, _ = create_cards_histogram(hand)
 
@@ -283,7 +284,7 @@ def is_four_of_a_kind(hand: List[Card]) -> Optional[Tuple[str, PokerHand, int]]:
     return None
 
 
-def is_straight_flush(hand: List[Card]) -> Optional[Tuple[str, PokerHand, int]]:
+def is_straight_flush(hand: Tuple[Card]) -> Optional[Tuple[str, PokerHand, int]]:
     """ If this hand contains a straight flush, return string representation of it """
     rank_histogram, suit_histogram = create_cards_histogram(hand)
 
@@ -314,8 +315,7 @@ def is_straight_flush(hand: List[Card]) -> Optional[Tuple[str, PokerHand, int]]:
                        f" {hand_rank_names_singular[top_of_streak.rank]}", PokerHand.STRAIGHT_FLUSH, hash_value
 
             # Account for low ace
-            if i == len(flush_cards) - 1 and streak == 3 and c.rank == "2" and any(
-                    [c for c in hand if c.rank == "A"]):
+            if i == len(flush_cards) - 1 and streak == 3 and c.rank == "2" and any([c for c in hand if c.rank == "A"]):
                 # In this case, top is always 5
                 top_of_streak = "5"
                 # For the hash value, we can just use the top of the streak
@@ -326,7 +326,7 @@ def is_straight_flush(hand: List[Card]) -> Optional[Tuple[str, PokerHand, int]]:
     return None
 
 
-def is_royal_flush(hand: List[Card]) -> Optional[Tuple[str, PokerHand, int]]:
+def is_royal_flush(hand: Tuple[Card]) -> Optional[Tuple[str, PokerHand, int]]:
     """ If this hand contains a royal flush, return string representation of it """
     straight_flush = is_straight_flush(hand)
     if straight_flush is not None and "Ten to Ace" in straight_flush[0]:
@@ -336,7 +336,7 @@ def is_royal_flush(hand: List[Card]) -> Optional[Tuple[str, PokerHand, int]]:
     return None
 
 
-def create_cards_histogram(cards: List[Card]) -> Tuple[Dict[str, int], Dict[str, int]]:
+def create_cards_histogram(cards: Tuple[Card]) -> Tuple[Dict[str, int], Dict[str, int]]:
     """ For a list of cards, return histograms of ranks and suits """
     rank_histogram = deepcopy(hand_rank_counter)
     suit_histogram = deepcopy(hand_suit_counter)
