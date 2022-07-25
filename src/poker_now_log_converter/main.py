@@ -140,7 +140,7 @@ def setup_arg_parser():
                         help="Specify output directory to save logs to. Defaults to current folder.")
     parser.add_argument("-H", "--heroName", type=str,
                         help="Specify the name of the hero. This should match an alias or unique "
-                             "'name @ id' of the player who card are being dealt to.")
+                             "'name @ id' of the player who cards are being dealt to.")
     parser.add_argument("-a", "--aliases", type=str,
                         help="Specify a mapping of player ids to aliases. The format should be:"
                              "\'player1=alias1,player2=alias2\'")

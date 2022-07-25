@@ -60,7 +60,7 @@ As a command line tool:
                             Specify output directory to save logs to. Defaults to current folder.
       -H HERONAME, --heroName HERONAME
                             Specify the name of the hero. This should match an alias or unique 'name @ id' of the player
-                            who card are being dealt to.
+                            who cards are being dealt to.
       -a ALIASES, --aliases ALIASES
                             Specify a mapping of player ids to aliases. The format should
                             be:'player1=alias1,player2=alias2'
