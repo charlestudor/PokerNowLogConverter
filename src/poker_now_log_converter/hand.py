@@ -241,10 +241,11 @@ class Hand:
         date_formatted = self.hand_start_datetime.strftime(f"%Y/%m/%d %H:%M:%S {timezone}")
 
         if not self.dealer:
-            # Dead button, select the seat before the small blind
-            # (this isn't technically correct, as the button could be an empty seat instead, however it seems to work
-            # for now)
-            button_seat_id = self.small_blind_seat.seat_number - 1 if self.small_blind_seat.seat_number > 0 else 10
+            # Dead button, so select the seat two places before the big blind to be the button
+            # This may be an empty seat
+            # The small blind may also be empty
+            # Seat numbers are 1-indexed
+            button_seat_id = ((self.big_blind_seats[0].seat_number - 3) % 10) + 1
         else:
             button_seat = self.get_seat_by_player_name_with_id(self.dealer.player_name_with_id)
             button_seat_id = button_seat.seat_number

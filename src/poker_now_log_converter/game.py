@@ -411,7 +411,8 @@ class Game:
                         line or " canceled the seat " in line or " decide whether to run it twice" in line or
                         "chooses to  run it twice." in line or "Dead Small Blind" == line or "The admin updated the "
                                                                                              "player " in line or
-                        "the admin queued the stack change " in line):
+                        "the admin queued the stack change " in line or "Undealt cards: " in line or "not run it "
+                                                                                                     "twice." in line):
                     logging.warning("State not considered: %s", line)
 
             if current_hand:
