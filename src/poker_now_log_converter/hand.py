@@ -62,6 +62,10 @@ class Hand:
         big_blind_seats (List[Seat]): The list of big blind seats in this hand. (Can be multiple)
         big_blind_amount (float): The size of the big blind in this hand
 
+        straddle_blind_player (obj:Player): The player object for the straddle player.
+        straddle_blind_seat (obj:Seat): The seat object for the straddle player.
+        straddle_blind_amount (float): The size of the straddle in this hand
+
         missing_small_blinds (List[Player]): The list of players who posted a missing or penalty small blind this hand.
 
         pre_flop_actions (List[Action]): List of Actions that occurred before the flop
@@ -100,6 +104,9 @@ class Hand:
     big_blind_players: List[Player] = field(default_factory=list)
     big_blind_seats: List[Seat] = field(default_factory=list)
     big_blind_amount: float = 0
+    straddle_player: Player = None
+    straddle_seat: Seat = None
+    straddle_amount: float = 0
 
     missing_small_blinds: List[Player] = field(default_factory=list)
 
@@ -236,6 +243,7 @@ class Hand:
         # Currency formatting
         big_blind = f"{currency_symbol}{self.big_blind_amount:,.2f}"
         small_blind = f"{currency_symbol}{self.small_blind_amount:,.2f}"
+        straddle = f"{currency_symbol}{self.straddle_amount:,.2f}"
 
         # Date format specified by PokerStars logs
         date_formatted = self.hand_start_datetime.strftime(f"%Y/%m/%d %H:%M:%S {timezone}")
@@ -269,6 +277,11 @@ class Hand:
         for bb_player in self.big_blind_players:
             output_lines.append(f"{bb_player.alias_name or bb_player.player_name}: "
                                 f"posts big blind {big_blind}")
+
+        # Straddle bet
+        if self.straddle_player:
+            output_lines.append(f"{self.straddle_player.alias_name or self.straddle_player.player_name}: "
+                                f"straddle {straddle}")
 
         # Missing / penalty small blinds posted
         for missing_small in self.missing_small_blinds:

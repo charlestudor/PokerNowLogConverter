@@ -211,6 +211,22 @@ class Game:
                 current_hand.big_blind_players.append(
                     current_hand.get_player_by_player_name_with_id(big_blind_player_name_with_id))
 
+            elif " posts a straddle " in line:
+                line = line.replace(" and go all in", "")
+                straddle_amount = float(line.split("\" posts a straddle of ")[1])
+                straddle_player_name_with_id = line.split("\" ")[0].split("\"")[1]
+                straddle_player = current_hand.get_player_by_player_name_with_id(straddle_player_name_with_id)
+                straddle_seat = next((seat for seat in current_hand.seats if
+                                      seat.seat_player.player_name_with_id == straddle_player_name_with_id), None)
+                straddle_seat.seat_did_bet = True
+                if straddle_amount > current_hand_street_max_bet:
+                    current_hand_street_max_bet = straddle_amount
+                prev_action_dict[straddle_player_name_with_id] = straddle_amount
+
+                current_hand.straddle_player = straddle_player
+                current_hand.straddle_amount = straddle_amount
+                current_hand.straddle_seat = straddle_seat
+
             elif " small blind of " in line:
                 line = line.replace(" and go all in", "")
                 if "missing " in line:
