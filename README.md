@@ -43,7 +43,7 @@ Poker Now Log Converter supports Python 3.8, 3.9 and 3.10.
     
 ### 3. Use as a script without installing
     $ git clone git://github.com/charlestudor/PokerNowLogConverter
-    python PokerNowLogConverter/src/poker_now_log_converter/main.py
+    $ python PokerNowLogConverter
 
 ## Usage
 
