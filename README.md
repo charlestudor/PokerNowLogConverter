@@ -24,26 +24,29 @@ This project was written for my personal use, and is not affiliated, endorsed or
 - Cross platform: Windows, Mac and Linux
 - Supports log files from Poker Now version 0.1.53 (06/24/2020) to present.
 - Run from the command line, or include as a python library. (Supports >=Python 3.8)
-- Outputs log files in PokerStars format. (OpenHH Format on the way)
-- Currently supports only Texas Hold'em cash games (Omaha and tournaments on the way)
+- Outputs log files in PokerStars format.
+- Currently supports only Texas Hold'em cash games.
 - Can adjust log output settings such as currency and timezone.
 - Use **Interactive Alias Mode** from the command line to easily rename players seen during poker hands to their known aliases.
  
 ## Installation
 
-Poker Now Log Converter supports Python 3.8, 3.9 and 3.10.
+Poker Now Log Converter supports Python 3.8 to 3.11.
 
 ### 1. Install via [Pip](http://www.pip-installer.org/):
 
     $ pip install poker-now-log-converter
+    $ python -m poker_now_log_converter 
 
 ### 2. Install from Git:
     $ git clone git://github.com/charlestudor/PokerNowLogConverter
     $ python setup.py install
+    $ python -m poker_now_log_converter 
+
     
 ### 3. Use as a script without installing
     $ git clone git://github.com/charlestudor/PokerNowLogConverter
-    $ python PokerNowLogConverter
+    $ python ./PokerNowLogConverter
 
 ## Usage
 
