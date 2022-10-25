@@ -23,7 +23,7 @@ jobs:
           - "macos-py38"
           - "macos-py39"
           - "macos-py310"
-          - "macos-py311"
+#          - "macos-py311"
           - "windows-py38"
           - "windows-py39"
           - "windows-py310"
