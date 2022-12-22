@@ -420,6 +420,11 @@ class Game:
                 current_hand.run_it_twice = True
                 current_hand.run_it_twice_from_street = current_hand_state
                 current_hand.run_it_twice_board = current_hand.board[:]
+            elif " posts an ante of " in line:
+                player_name_with_id = line.split("\" ")[0].split("\"")[1]
+                p_obj = current_hand.get_player_by_player_name_with_id(player_name_with_id)
+                ante_amount = float(line.split(" posts an ante of ")[1])
+                current_hand.antes.append((p_obj, ante_amount))
             else:
                 if not (
                         "joined" in line or "requested" in line or "quits" in line or "created" in line or "approved"

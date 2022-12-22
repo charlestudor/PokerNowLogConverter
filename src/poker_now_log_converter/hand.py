@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from random import getrandbits, seed
-from typing import List
+from typing import List, Tuple
 
 from action import Action
 from card import Card
@@ -107,6 +107,7 @@ class Hand:
     straddle_player: Player = None
     straddle_seat: Seat = None
     straddle_amount: float = 0
+    antes: List[Tuple[Player, float]] = field(default_factory=list)
 
     missing_small_blinds: List[Player] = field(default_factory=list)
 
@@ -267,6 +268,11 @@ class Hand:
             output_lines.append(f"Seat {seat.seat_number}: "
                                 f"{seat.seat_player.alias_name or seat.seat_player.player_name} "
                                 f"({currency_symbol}{seat.stack_size:,.2f} in chips)")
+
+        # Antes
+        for ante_player, ante_amount in self.antes:
+            output_lines.append(f"{ante_player.alias_name or ante_player.player_name}: posts the ante "
+                                f"{currency_symbol}{ante_amount:,.2f}")
 
         # Small blind posted
         if self.small_blind_player:
