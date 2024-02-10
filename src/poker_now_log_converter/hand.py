@@ -373,13 +373,13 @@ class Hand:
             output_lines.append("Hand was run twice")
             if len(self.board) > 0:
                 board = " ".join(list(map(lambda x: x.card_str, self.board)))
-                output_lines.append(f"FIRST Board: [{board}]")
+                output_lines.append(f"FIRST Board [{board}]")
             if len(self.run_it_twice_board) > 0:
                 second_board = " ".join(list(map(lambda x: x.card_str, self.run_it_twice_board)))
-                output_lines.append(f"SECOND Board: [{second_board}]")
+                output_lines.append(f"SECOND Board [{second_board}]")
         elif len(self.board) > 0:
             board = " ".join(list(map(lambda x: x.card_str, self.board)))
-            output_lines.append(f"Board: [{board}]")
+            output_lines.append(f"Board [{board}]")
 
         # Each seat gets a line in the summary section
         for seat in self.seats:
