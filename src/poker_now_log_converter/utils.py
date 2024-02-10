@@ -161,7 +161,7 @@ def is_two_pair(hand: Tuple[Card]) -> Optional[Tuple[str, PokerHand, int]]:
                 hash_value = hash_cards(remaining_card) + (hand_rank_values[two_pair[1]] * pow(BASE_K, 1)) + (
                         hand_rank_values[two_pair[0]] * pow(BASE_K, 2))
 
-                return f"two pair, {hand_rank_names_plural[two_pair[0]]} and {hand_rank_names_plural[two_pair[1]]}",\
+                return f"two pair, {hand_rank_names_plural[two_pair[0]]} and {hand_rank_names_plural[two_pair[1]]}", \
                        PokerHand.TWO_PAIR, hash_value
 
     return None
@@ -204,7 +204,7 @@ def is_straight(hand: Tuple[Card]) -> Optional[Tuple[str, PokerHand, int]]:
             # For the hash value, we can just use the top of the streak
             hash_value = hand_rank_values[top_of_streak]
 
-            return f"a straight, {hand_rank_names_singular[rank]} to {hand_rank_names_singular[top_of_streak]}",\
+            return f"a straight, {hand_rank_names_singular[rank]} to {hand_rank_names_singular[top_of_streak]}", \
                    PokerHand.STRAIGHT, hash_value
 
         # Account for low ace
@@ -214,7 +214,7 @@ def is_straight(hand: Tuple[Card]) -> Optional[Tuple[str, PokerHand, int]]:
             top_of_streak = "5"
             # For the hash value, we can just use the top of the streak
             hash_value = hand_rank_values[top_of_streak]
-            return f"a straight, {hand_rank_names_singular['A']} to {hand_rank_names_singular[top_of_streak]}",\
+            return f"a straight, {hand_rank_names_singular['A']} to {hand_rank_names_singular[top_of_streak]}", \
                    PokerHand.STRAIGHT, hash_value
 
     return None
