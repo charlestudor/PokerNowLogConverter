@@ -64,7 +64,7 @@ Uncalled bet ($10.00) returned to CT
 CT collected $4.00 from pot
 *** SUMMARY ***
 Total pot: $4.00 | Rake 0
-Board: [3s Ac Kd]
+Board [3s Ac Kd]
 Seat 1: CT (big blind) collected ($4.00)
 Seat 2: Opponent2 (button) folded before Flop (didn't bet)
 Seat 6: Opponent1 (small blind) folded on the Flop

@@ -22,7 +22,7 @@ spa@ces: shows [Tc 5c]
 spa@ces collected $120.00 from pot
 *** SUMMARY ***
 Total pot: $120.00 | Rake 0
-Board: [9h Qh Ah Jc 8s]
+Board [9h Qh Ah Jc 8s]
 Seat 1: P1 (button) folded before Flop (didn't bet)
 Seat 2: @atsymbols@@@ (small blind) folded before Flop
 Seat 3: quotes''' (big blind) showed [Ac Qs] and lost with two pair, Aces and Queens
@@ -49,7 +49,7 @@ spa@ces: shows [4c 4d]
 spa@ces collected $60.00 from pot
 *** SUMMARY ***
 Total pot: $60.00 | Rake 0
-Board: [6s 2s 7h 5d 3h]
+Board [6s 2s 7h 5d 3h]
 Seat 1: P1 folded before Flop (didn't bet)
 Seat 2: @atsymbols@@@ (button) showed [8h Ac] and lost with high card Ace
 Seat 4: spa@ces (big blind) showed [4c 4d] and won ($60.00) with a straight, Three to Seven
@@ -75,7 +75,7 @@ spa@ces: shows [8d 2d]
 P1 collected $100.00 from pot
 *** SUMMARY ***
 Total pot: $100.00 | Rake 0
-Board: [5c Qd 9c 6h 5d]
+Board [5c Qd 9c 6h 5d]
 Seat 1: P1 (big blind) showed [Kd 9h] and won ($100.00) with two pair, Nines and Fives
 Seat 4: spa@ces (small blind) (button) showed [8d 2d] and lost with a pair of Fives
 
@@ -99,7 +99,7 @@ spa@ces: shows [Jh Ks]
 P1 collected $200.00 from pot
 *** SUMMARY ***
 Total pot: $200.00 | Rake 0
-Board: [3d 4h 8s 5s Ac]
+Board [3d 4h 8s 5s Ac]
 Seat 1: P1 (small blind) (button) showed [2h 9d] and won ($200.00) with a straight, Ace to Five
 Seat 4: spa@ces (big blind) showed [Jh Ks] and lost with high card Ace
 
