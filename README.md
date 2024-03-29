@@ -12,10 +12,9 @@ A  command line utility for converting logs from Poker Now games to other format
 [Poker Now](https://www.pokernow.club) is a free online client for playing Texas Hold'em, Omaha PL and Omaha PL Hi/Lo poker.
 
 Currently the game logs that can be downloaded from the Poker Now client are not supported by most poker analysis programs
-such as PokerTracker or Holdem Manager.
+such as GTO Wizard, PokerTracker, Holdem Manager, UpSwingPoker etc
 
-**Poker Now Log Converter** can be used to convert Poker Now logs into other formats for further analysis.
-(Currently supports only the PokerStars format)
+**Poker Now Log Converter** can be used to convert Poker Now logs into the PokerStars format for further analysis.
 
 This project was written for my personal use, and is not affiliated, endorsed or sponsored by the Poker Now team.
 
@@ -24,7 +23,7 @@ This project was written for my personal use, and is not affiliated, endorsed or
 - Cross platform: Windows, Mac and Linux
 - Supports log files from Poker Now version 0.1.53 (06/24/2020) to present.
 - Run from the command line, or include as a python library. (Supports >=Python 3.8)
-- Outputs log files in PokerStars format.
+- Outputs log files in PokerStars format which can then be uploaded into tools such as GTO Wizard, PokerTracker etc for analysis.
 - Currently supports only Texas Hold'em cash games.
 - Can adjust log output settings such as currency and timezone.
 - Use **Interactive Alias Mode** from the command line to easily rename players seen during poker hands to their known aliases.
