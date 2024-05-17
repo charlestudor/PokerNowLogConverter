@@ -134,23 +134,33 @@ class Game:
 
                 # Update button and blind positions
                 num_seats = len(current_hand.seats)
-                button_seat_number = (utg_seat_number - 3) % num_seats
-                small_blind_seat_number = (utg_seat_number - 1) % num_seats
-                big_blind_seat_number = (utg_seat_number - 2) % num_seats
+                available_seats = [seat for seat in current_hand.seats if seat.stack_size > 0]
 
-                button_seat = next((seat for seat in current_hand.seats if seat.seat_number == button_seat_number), None)
-                small_blind_seat = next((seat for seat in current_hand.seats if seat.seat_number == small_blind_seat_number), None)
-                big_blind_seat = next((seat for seat in current_hand.seats if seat.seat_number == big_blind_seat_number), None)
+                if available_seats:
+                    utg_seat = available_seats[0]
+                    utg_seat_number = utg_seat.seat_number
 
-                if button_seat:
-                    current_hand.dealer = button_seat.seat_player
-                if small_blind_seat:
-                    current_hand.small_blind_seat = small_blind_seat
-                    current_hand.small_blind_player = small_blind_seat.seat_player
-                if big_blind_seat:
-                    current_hand.big_blind_seats = [big_blind_seat]
-                    current_hand.big_blind_players = [big_blind_seat.seat_player]
+                    button_seat_number = (utg_seat_number - 2) % num_seats
+                    small_blind_seat_number = (utg_seat_number - 1) % num_seats
+                    big_blind_seat_number = utg_seat_number
 
+                    button_seat = next((seat for seat in current_hand.seats if seat.seat_number == button_seat_number), None)
+                    small_blind_seat = next((seat for seat in current_hand.seats if seat.seat_number == small_blind_seat_number), None)
+                    big_blind_seat = next((seat for seat in current_hand.seats if seat.seat_number == big_blind_seat_number), None)
+
+                    if button_seat:
+                        current_hand.dealer = button_seat.seat_player
+                    if small_blind_seat:
+                        current_hand.small_blind_seat = small_blind_seat
+                        current_hand.small_blind_player = small_blind_seat.seat_player
+                    if big_blind_seat:
+                        current_hand.big_blind_seats = [big_blind_seat]
+                        current_hand.big_blind_players = [big_blind_seat.seat_player]
+                else:
+                    # If no available seats, assume button is at seat 1
+                    button_seat = next((seat for seat in current_hand.seats if seat.seat_number == 1), None)
+                    if button_seat:
+                        current_hand.dealer = button_seat.seat_player
                 # current_hand.dealer = button_seat.seat_player
                 # current_hand.small_blind_seat = small_blind_seat
                 # current_hand.small_blind_player = small_blind_seat.seat_player

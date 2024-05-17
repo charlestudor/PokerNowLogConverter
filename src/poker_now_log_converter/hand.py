@@ -256,7 +256,7 @@ class Hand:
             available_seats = [seat for seat in self.seats if seat.stack_size > 0]
             if available_seats:
                 first_available_seat_number = available_seats[0].seat_number
-                button_seat_id = ((first_available_seat_number - 4) % 10) + 1
+                button_seat_id = ((self.big_blind_seats[0].seat_number - 3) % 10) + 1
             else:
                 # If no available seats, assume button is seat 1
                 button_seat_id = 1
