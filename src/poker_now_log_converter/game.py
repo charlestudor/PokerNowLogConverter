@@ -62,7 +62,6 @@ class Game:
         # The current largest bet in this street of the hand being parsed
         current_hand_street_max_bet: float = 0
 
-
         # Helper dictionary to keep track of what a given player did last in this hand while parsing.
         # The key is the player_name_with_id attribute.
         prev_action_dict: DefaultDict[str, float] = defaultdict(float)
@@ -144,9 +143,12 @@ class Game:
                     small_blind_seat_number = (utg_seat_number - 1) % num_seats
                     big_blind_seat_number = utg_seat_number
 
-                    button_seat = next((seat for seat in current_hand.seats if seat.seat_number == button_seat_number), None)
-                    small_blind_seat = next((seat for seat in current_hand.seats if seat.seat_number == small_blind_seat_number), None)
-                    big_blind_seat = next((seat for seat in current_hand.seats if seat.seat_number == big_blind_seat_number), None)
+                    button_seat = next(
+                        (seat for seat in current_hand.seats if seat.seat_number == button_seat_number), None)
+                    small_blind_seat = next(
+                        (seat for seat in current_hand.seats if seat.seat_number == small_blind_seat_number), None)
+                    big_blind_seat = next(
+                        (seat for seat in current_hand.seats if seat.seat_number == big_blind_seat_number), None)
 
                     if button_seat:
                         current_hand.dealer = button_seat.seat_player
@@ -476,9 +478,9 @@ class Game:
                         # winning_hand = line.split("with ")[1].split(" (")[0]
 
                         p_seat.seat_summary = f"showed {p_seat.seat_hole_cards} and won " \
-                                              f"({self.currency_symbol}" \
-                                              f"{p_seat.collected_amount:,.2f}) " \
-                                              f"with {winning_hand}"
+                            f"({self.currency_symbol}" \
+                            f"{p_seat.collected_amount:,.2f}) " \
+                            f"with {winning_hand}"
                 else:
                     p_seat.seat_summary = f"collected ({self.currency_symbol}{p_seat.collected_amount:,.2f})"
 
