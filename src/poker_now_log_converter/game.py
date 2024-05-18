@@ -163,11 +163,6 @@ class Game:
                     button_seat = next((seat for seat in current_hand.seats if seat.seat_number == 1), None)
                     if button_seat:
                         current_hand.dealer = button_seat.seat_player
-                # current_hand.dealer = button_seat.seat_player
-                # current_hand.small_blind_seat = small_blind_seat
-                # current_hand.small_blind_player = small_blind_seat.seat_player
-                # current_hand.big_blind_seats = [big_blind_seat]
-                # current_hand.big_blind_players = [big_blind_seat.seat_player]
 
             elif "\" raises" in line:
                 line = line.replace(" and go all in", "")
