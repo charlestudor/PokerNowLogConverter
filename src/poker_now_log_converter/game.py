@@ -169,7 +169,7 @@ class Game:
                 # current_hand.big_blind_seats = [big_blind_seat]
                 # current_hand.big_blind_players = [big_blind_seat.seat_player]
 
-            elif "raises" in line:
+            elif "\" raises" in line:
                 line = line.replace(" and go all in", "")
                 line = line.replace(" and all in", "")
                 line = line.replace("with ", "to ")
@@ -187,7 +187,7 @@ class Game:
                 if p_seat:
                     p_seat.seat_did_bet = True
 
-            elif "bets" in line:
+            elif "\" bets" in line:
                 line = line.replace(" and go all in", "")
                 line = line.replace(" and all in", "")
                 line = line.replace(" with", "")
@@ -203,7 +203,7 @@ class Game:
                 if p_seat:
                     p_seat.seat_did_bet = True
 
-            elif "calls" in line:
+            elif "\" calls" in line:
                 line = line.replace(" and go all in", "")
                 line = line.replace(" and all in", "")
                 line = line.replace(" with", "")
@@ -225,7 +225,7 @@ class Game:
                 p_seat = current_hand.get_seat_by_player_name_with_id(player_name_with_id)
                 if p_seat:
                     p_seat.seat_did_bet = True
-            elif "checks" in line:
+            elif "\" checks" in line:
                 # print(line)
                 player_name_with_id = line.split("\" ")[0].split("\"")[1]
                 p_obj = current_hand.get_player_by_player_name_with_id(player_name_with_id)
@@ -250,7 +250,7 @@ class Game:
                 if p_seat:
                     p_seat.seat_did_bet = True
 
-            elif "folds" in line:
+            elif "\" folds" in line:
                 player_name_with_id = line.split("\" ")[0].split("\"")[1]
                 p_seat = current_hand.get_seat_by_player_name_with_id(player_name_with_id)
                 p_obj = current_hand.get_player_by_player_name_with_id(player_name_with_id)
