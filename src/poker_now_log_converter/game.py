@@ -53,6 +53,7 @@ class Game:
         self.timezone: str = timezone
         self.original_file_path: str = original_filename
 
+        self.is_bomb_pot = False
         # The hand currently being parsed during initialisation. This initial Hand object won't actually be
         # used, it should encounter a -- starting hand -- statement straight away.
         current_hand: Hand = Hand()
@@ -106,7 +107,64 @@ class Game:
                     current_hand.get_seat_by_player_name_with_id(
                         current_hand.dealer.player_name_with_id).seat_desc += " (button)"
 
-            elif "raises" in line:
+            elif "posts a bet of" in line and "bomb pot bet" in line:
+                player_name_with_id = line.split("\" ")[0].split("\"")[1]
+                p_obj = current_hand.get_player_by_player_name_with_id(player_name_with_id)
+                bet_amount_str = line.split("posts a bet of ")[1].split(" (bomb pot bet)")[0]
+                bet_amount = float(bet_amount_str)
+                current_hand_street_max_bet = bet_amount
+                prev_action_dict[player_name_with_id] = bet_amount
+
+                current_hand.is_bomb_pot = True
+                current_hand.pre_flop_actions.append(Action(player=p_obj, bet_amount=bet_amount, action="bet"))
+
+                # Update button and blind positions based on the UTG player
+                utg_seat = current_hand.get_seat_by_player_name_with_id(player_name_with_id)
+                utg_seat_number = utg_seat.seat_number
+
+                # Clear previous blind and button information
+                current_hand.dealer = None
+                current_hand.small_blind_seat = None
+                current_hand.small_blind_player = None
+                current_hand.small_blind_amount = 0
+                current_hand.big_blind_seats = []
+                current_hand.big_blind_players = []
+                current_hand.big_blind_amount = 0
+
+                # Update button and blind positions
+                num_seats = len(current_hand.seats)
+                available_seats = [seat for seat in current_hand.seats if seat.stack_size > 0]
+
+                if available_seats:
+                    utg_seat = available_seats[0]
+                    utg_seat_number = utg_seat.seat_number
+
+                    button_seat_number = (utg_seat_number - 2) % num_seats
+                    small_blind_seat_number = (utg_seat_number - 1) % num_seats
+                    big_blind_seat_number = utg_seat_number
+
+                    button_seat = next(
+                        (seat for seat in current_hand.seats if seat.seat_number == button_seat_number), None)
+                    small_blind_seat = next(
+                        (seat for seat in current_hand.seats if seat.seat_number == small_blind_seat_number), None)
+                    big_blind_seat = next(
+                        (seat for seat in current_hand.seats if seat.seat_number == big_blind_seat_number), None)
+
+                    if button_seat:
+                        current_hand.dealer = button_seat.seat_player
+                    if small_blind_seat:
+                        current_hand.small_blind_seat = small_blind_seat
+                        current_hand.small_blind_player = small_blind_seat.seat_player
+                    if big_blind_seat:
+                        current_hand.big_blind_seats = [big_blind_seat]
+                        current_hand.big_blind_players = [big_blind_seat.seat_player]
+                else:
+                    # If no available seats, assume button is at seat 1
+                    button_seat = next((seat for seat in current_hand.seats if seat.seat_number == 1), None)
+                    if button_seat:
+                        current_hand.dealer = button_seat.seat_player
+
+            elif "\" raises" in line:
                 line = line.replace(" and go all in", "")
                 line = line.replace(" and all in", "")
                 line = line.replace("with ", "to ")
@@ -124,7 +182,7 @@ class Game:
                 if p_seat:
                     p_seat.seat_did_bet = True
 
-            elif "bets" in line:
+            elif "\" bets" in line:
                 line = line.replace(" and go all in", "")
                 line = line.replace(" and all in", "")
                 line = line.replace(" with", "")
@@ -140,13 +198,19 @@ class Game:
                 if p_seat:
                     p_seat.seat_did_bet = True
 
-            elif "calls" in line:
+            elif "\" calls" in line:
                 line = line.replace(" and go all in", "")
                 line = line.replace(" and all in", "")
                 line = line.replace(" with", "")
                 player_name_with_id = line.split("\" ")[0].split("\"")[1]
                 p_obj = current_hand.get_player_by_player_name_with_id(player_name_with_id)
-                call_amount = float(line.split("calls ")[1])
+
+                if "bomb pot bet" in line:
+                    call_amount_str = line.split("calls ")[1].split(" (bomb pot bet)")[0]
+                else:
+                    call_amount_str = line.split("calls ")[1]
+
+                call_amount = float(call_amount_str)
                 difference = call_amount - prev_action_dict[player_name_with_id]
                 prev_action_dict[player_name_with_id] = call_amount
 
@@ -156,8 +220,7 @@ class Game:
                 p_seat = current_hand.get_seat_by_player_name_with_id(player_name_with_id)
                 if p_seat:
                     p_seat.seat_did_bet = True
-
-            elif "checks" in line:
+            elif "\" checks" in line:
                 # print(line)
                 player_name_with_id = line.split("\" ")[0].split("\"")[1]
                 p_obj = current_hand.get_player_by_player_name_with_id(player_name_with_id)
@@ -182,7 +245,7 @@ class Game:
                 if p_seat:
                     p_seat.seat_did_bet = True
 
-            elif "folds" in line:
+            elif "\" folds" in line:
                 player_name_with_id = line.split("\" ")[0].split("\"")[1]
                 p_seat = current_hand.get_seat_by_player_name_with_id(player_name_with_id)
                 p_obj = current_hand.get_player_by_player_name_with_id(player_name_with_id)
@@ -410,9 +473,9 @@ class Game:
                         # winning_hand = line.split("with ")[1].split(" (")[0]
 
                         p_seat.seat_summary = f"showed {p_seat.seat_hole_cards} and won " \
-                                              f"({self.currency_symbol}" \
-                                              f"{p_seat.collected_amount:,.2f}) " \
-                                              f"with {winning_hand}"
+                            f"({self.currency_symbol}" \
+                            f"{p_seat.collected_amount:,.2f}) " \
+                            f"with {winning_hand}"
                 else:
                     p_seat.seat_summary = f"collected ({self.currency_symbol}{p_seat.collected_amount:,.2f})"
 

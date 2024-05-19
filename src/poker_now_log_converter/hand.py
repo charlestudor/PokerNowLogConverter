@@ -254,7 +254,12 @@ class Hand:
             # This may be an empty seat
             # The small blind may also be empty
             # Seat numbers are 1-indexed
-            button_seat_id = ((self.big_blind_seats[0].seat_number - 3) % 10) + 1
+            available_seats = [seat for seat in self.seats if seat.stack_size > 0]
+            if available_seats:
+                button_seat_id = ((self.big_blind_seats[0].seat_number - 3) % 10) + 1
+            else:
+                # If no available seats, assume button is seat 1
+                button_seat_id = 1
         else:
             button_seat = self.get_seat_by_player_name_with_id(self.dealer.player_name_with_id)
             button_seat_id = button_seat.seat_number
