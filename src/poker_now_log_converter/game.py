@@ -189,7 +189,11 @@ class Game:
                 line = line.replace("with ", "to ")
                 player_name_with_id = line.split("\" ")[0].split("\"")[1]
                 p_obj = current_hand.get_player_by_player_name_with_id(player_name_with_id)
-                raise_amount = float(line.split("to ")[1])
+                if "raises to " in line:
+                    raise_amount = float(line.split("raises to ")[1])
+                else:
+                    raise_amount = float(line.split("raises ")[1])
+
                 difference = raise_amount - current_hand_street_max_bet
                 current_hand_street_max_bet = raise_amount
                 prev_action_dict[player_name_with_id] = raise_amount
