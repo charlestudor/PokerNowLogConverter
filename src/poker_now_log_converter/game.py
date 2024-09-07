@@ -190,7 +190,7 @@ class Game:
                 player_name_with_id = line.split("\" ")[0].split("\"")[1]
                 p_obj = current_hand.get_player_by_player_name_with_id(player_name_with_id)
                 if "raises to " in line:
-                    raise_amount = float(line.split("raises to ")[1])
+                    raise_amount = float(line.split("\" raises to ")[1])
                 else:
                     raise_amount = float(line.split("raises ")[1])
 
@@ -519,7 +519,8 @@ class Game:
                         "chooses to  run it twice." in line or "Dead Small Blind" == line or "The admin updated the "
                                                                                              "player " in line or
                         "the admin queued the stack change " in line or "Undealt cards: " in line or "not run it "
-                                                                                                     "twice." in line):
+                                                                                                     "twice." in line or
+                        "forced the player to away mode" in line or "rejected the seat request" in line):
                     logging.warning("State not considered: %s", line)
 
             if current_hand:
