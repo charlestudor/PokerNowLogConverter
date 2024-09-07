@@ -402,8 +402,8 @@ class Hand:
 
             # Now construct the seat summary line
             summary_line = f"Seat {seat.seat_number}: " \
-                           f"{seat.seat_player.alias_name or seat.seat_player.player_name}{seat.seat_desc} " \
-                           f"{seat.seat_summary}{seat.seat_run_it_twice_summary}"
+                f"{seat.seat_player.alias_name or seat.seat_player.player_name}{seat.seat_desc} " \
+                f"{seat.seat_summary}{seat.seat_run_it_twice_summary}"
             # If we know the hole cards (and they weren't mentioned earlier in the summary, put them at the end)
             if "showed" not in seat.seat_summary and seat.seat_hole_cards:
                 summary_line += " " + seat.seat_hole_cards

@@ -159,10 +159,10 @@ def is_two_pair(hand: Tuple[Card]) -> Optional[Tuple[str, PokerHand, int]]:
 
                 # Take the hash of the remaining cards, add to the hashes of each of the two pair
                 hash_value = hash_cards(remaining_card) + (hand_rank_values[two_pair[1]] * pow(BASE_K, 1)) + (
-                        hand_rank_values[two_pair[0]] * pow(BASE_K, 2))
+                    hand_rank_values[two_pair[0]] * pow(BASE_K, 2))
 
                 return f"two pair, {hand_rank_names_plural[two_pair[0]]} and {hand_rank_names_plural[two_pair[1]]}", \
-                       PokerHand.TWO_PAIR, hash_value
+                    PokerHand.TWO_PAIR, hash_value
 
     return None
 
@@ -205,7 +205,7 @@ def is_straight(hand: Tuple[Card]) -> Optional[Tuple[str, PokerHand, int]]:
             hash_value = hand_rank_values[top_of_streak]
 
             return f"a straight, {hand_rank_names_singular[rank]} to {hand_rank_names_singular[top_of_streak]}", \
-                   PokerHand.STRAIGHT, hash_value
+                PokerHand.STRAIGHT, hash_value
 
         # Account for low ace
         if i == len(list(rank_histogram.keys())) - 1 and streak == 3 and rank == "2" and any(
@@ -215,7 +215,7 @@ def is_straight(hand: Tuple[Card]) -> Optional[Tuple[str, PokerHand, int]]:
             # For the hash value, we can just use the top of the streak
             hash_value = hand_rank_values[top_of_streak]
             return f"a straight, {hand_rank_names_singular['A']} to {hand_rank_names_singular[top_of_streak]}", \
-                   PokerHand.STRAIGHT, hash_value
+                PokerHand.STRAIGHT, hash_value
 
     return None
 
@@ -261,7 +261,7 @@ def is_full_house(hand: Tuple[Card]) -> Optional[Tuple[str, PokerHand, int]]:
             highest_three_of_a_kind] * pow(BASE_K, 1)
 
         return f"a full house, {hand_rank_names_plural[highest_three_of_a_kind]} full of " \
-               f"{hand_rank_names_plural[highest_pair]}", PokerHand.FULL_HOUSE, hash_value
+            f"{hand_rank_names_plural[highest_pair]}", PokerHand.FULL_HOUSE, hash_value
 
     return None
 
@@ -312,7 +312,7 @@ def is_straight_flush(hand: Tuple[Card]) -> Optional[Tuple[str, PokerHand, int]]
                 hash_value = hand_rank_values[top_of_streak.rank]
 
                 return f"a straight flush, {hand_rank_names_singular[c.rank]} to" \
-                       f" {hand_rank_names_singular[top_of_streak.rank]}", PokerHand.STRAIGHT_FLUSH, hash_value
+                    f" {hand_rank_names_singular[top_of_streak.rank]}", PokerHand.STRAIGHT_FLUSH, hash_value
 
             # Account for low ace
             if i == len(flush_cards) - 1 and streak == 3 and c.rank == "2" and any([c for c in hand if c.rank == "A"]):
@@ -321,7 +321,7 @@ def is_straight_flush(hand: Tuple[Card]) -> Optional[Tuple[str, PokerHand, int]]
                 # For the hash value, we can just use the top of the streak
                 hash_value = hand_rank_values[top_of_streak]
                 return f"a straight flush, {hand_rank_names_singular['A']} to" \
-                       f" {hand_rank_names_singular[top_of_streak]}", PokerHand.STRAIGHT_FLUSH, hash_value
+                    f" {hand_rank_names_singular[top_of_streak]}", PokerHand.STRAIGHT_FLUSH, hash_value
 
     return None
 

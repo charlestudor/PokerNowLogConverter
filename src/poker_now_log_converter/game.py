@@ -62,6 +62,11 @@ class Game:
         # The current largest bet in this street of the hand being parsed
         current_hand_street_max_bet: float = 0
 
+        # We'll need to skip the 72 game.
+        self.bounty_hands_count: int = 0  # count 7-2 bounty hands
+        skip_until_next_hand = False
+        in_bounty_hand = False
+
         # Helper dictionary to keep track of what a given player did last in this hand while parsing.
         # The key is the player_name_with_id attribute.
         prev_action_dict: DefaultDict[str, float] = defaultdict(float)
@@ -72,6 +77,20 @@ class Game:
         # Iterate over the log, building a new Hand object for each played hand
         for row in poker_now_log:
             line = row[0]
+
+            if "-- starting hand #" in line:
+                if in_bounty_hand:
+                    self.bounty_hands_count += 1
+                    in_bounty_hand = False
+                skip_until_next_hand = False
+
+            if skip_until_next_hand:
+                continue
+
+            if "72 bounty" in line or "7-2 bounty" in line:
+                skip_until_next_hand = True
+                in_bounty_hand = True
+                continue
 
             if "-- starting hand " in line:
                 # Initialise new hand object
@@ -170,7 +189,11 @@ class Game:
                 line = line.replace("with ", "to ")
                 player_name_with_id = line.split("\" ")[0].split("\"")[1]
                 p_obj = current_hand.get_player_by_player_name_with_id(player_name_with_id)
-                raise_amount = float(line.split("to ")[1])
+                if "raises to " in line:
+                    raise_amount = float(line.split("\" raises to ")[1])
+                else:
+                    raise_amount = float(line.split("raises ")[1])
+
                 difference = raise_amount - current_hand_street_max_bet
                 current_hand_street_max_bet = raise_amount
                 prev_action_dict[player_name_with_id] = raise_amount
@@ -496,11 +519,19 @@ class Game:
                         "chooses to  run it twice." in line or "Dead Small Blind" == line or "The admin updated the "
                                                                                              "player " in line or
                         "the admin queued the stack change " in line or "Undealt cards: " in line or "not run it "
-                                                                                                     "twice." in line):
+                                                                                                     "twice." in line or
+                        "forced the player to away mode" in line or "rejected the seat request" in line):
                     logging.warning("State not considered: %s", line)
 
             if current_hand:
                 current_hand.raw_strings.append(line)
+
+        if self.bounty_hands_count > 0:
+            logging.warning(
+                f"\n"
+                f"{self.bounty_hands_count} hand{'s' if self.bounty_hands_count >= 1 else ''} were 7-2 bounty hands "
+                "and were not included in the output."
+                f"\n")
 
         self.seen_players = set()
         self.refresh_seen_players()

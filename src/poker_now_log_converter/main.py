@@ -65,7 +65,7 @@ def save_game_to_file_pokerstars(game: Game, output_dir: str, new_filename: str 
 
         if not new_filename:
             new_filename = f"ConvertedPNLog-{first_hand_date_formatted}-" \
-                           f"{first_hand_ss}-{first_hand_bb}-{first_hand_type}.txt"
+                f"{first_hand_ss}-{first_hand_bb}-{first_hand_type}.txt"
 
         # Create output directory create it if it doesn't exist already
         output_path = Path(output_dir).resolve()
